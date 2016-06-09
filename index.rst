@@ -13,7 +13,6 @@ Contents:
 
    README
    architecture
-   test
 
 
 Indices and tables
