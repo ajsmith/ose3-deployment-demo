@@ -18,11 +18,11 @@ Hat Linuxes.
 
 On recent versions of Fedora, these can be installed using::
 
-    # dnf install python python-virtualenv
+    # dnf install python python-virtualenv redhat-rpm-config
 
 On RHEL or older versions of Fedora, install by running::
 
-    # yum install python python-virtualenv
+    # yum install python python-virtualenv redhat-rpm-config
 
 If you simply wish to read the documentation without fancy rendering or running
 the examples, only a basic text editor is required.
