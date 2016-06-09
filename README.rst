@@ -34,21 +34,20 @@ Installation
 To install the tools needed to build documentation, follow the steps
 below.
 
-*Note: The installation method described here uses Python virtualenv and does
-**not** require root privileges.*
+*Note: This installation method does not require root privileges.*
 
 
  #. Set up a virtualenv site::
 
-        $ virtualenv py
+    $ virtualenv py
 
  #. Activate the virtualenv::
 
-        $ source py/bin/activate
+    $ source py/bin/activate
 
  #. Install tools::
 
-        $ pip install -r requirements.txt
+    $ pip install -r requirements.txt
 
 
 Building the Documentation
