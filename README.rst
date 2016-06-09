@@ -36,7 +36,6 @@ the steps below.
 
 *Note: This installation method does not require root privileges.*
 
-
  #. Set up a virtualenv site::
 
     $ virtualenv py
