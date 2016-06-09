@@ -31,8 +31,8 @@ the examples, only a basic text editor is required.
 Installation
 ============
 
-To install the tools needed to build documentation, follow the steps
-below.
+To install the tools needed to build documentation and run the examples, follow
+the steps below.
 
 *Note: This installation method does not require root privileges.*
 
@@ -53,7 +53,6 @@ below.
 Building the Documentation
 ==========================
 
-
 To build the HTML documentation, do the following::
 
     $ source py/bin/activate
@@ -61,8 +60,9 @@ To build the HTML documentation, do the following::
 
 The rendered documentation can now be found in `_build/html/`.
 
-To render as a PDF, do::
+Or to render as a PDF, do::
 
+    $ source py/bin/activate
     $ make latexpdf
 
 *Note: Additional texlive packages may need to be installed for PDF
