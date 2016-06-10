@@ -18,11 +18,11 @@ Hat Linuxes.
 
 On recent versions of Fedora, these can be installed using::
 
-    # dnf install python python-virtualenv redhat-rpm-config
+    # dnf install python python-virtualenv redhat-rpm-config openssl-devel
 
 On RHEL or older versions of Fedora, install by running::
 
-    # yum install python python-virtualenv redhat-rpm-config
+    # yum install python python-virtualenv redhat-rpm-config openssl-devel
 
 If you simply wish to read the documentation without fancy rendering or running
 the examples, only a basic text editor is required.
@@ -31,10 +31,16 @@ the examples, only a basic text editor is required.
 Installation
 ============
 
-To install the tools needed to build documentation and run the examples, follow
-the steps below.
+To build documentation and run the examples, the following Python packages are
+installed:
 
-*Note: This installation method does not require root privileges.*
+  - Ansible
+  - OpenStack Client
+  - Sphinx
+
+Follow the steps below to perform the installation.
+
+*Note: Installation does not require root privileges.*
 
  #. Set up a virtualenv site::
 
