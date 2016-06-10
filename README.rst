@@ -7,13 +7,13 @@ deployment in an HA configuration using a cloud provider, such as AWS or
 OpenStack.
 
 
-Requirements
-============
+System Requirements
+===================
 
 Python 2.7 or higher is required to build the documentation and run the
 examples. Python virtualenv is also recommended.
 
-The tooling has been tested on Fedora 23, but should work on most modern Red
+This project has been tested on Fedora 23, but should work on most modern Red
 Hat Linuxes.
 
 On recent versions of Fedora, these can be installed using::
