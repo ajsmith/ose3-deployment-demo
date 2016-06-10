@@ -44,11 +44,11 @@ Follow the steps below to perform the installation.
 
  #. Set up a virtualenv site::
 
-    $ virtualenv py
+    $ virtualenv ~/py
 
  #. Activate the virtualenv::
 
-    $ source py/bin/activate
+    $ source ~/py/bin/activate
 
  #. Install tools::
 
@@ -60,14 +60,14 @@ Building the Documentation
 
 To build the HTML documentation, do the following::
 
-    $ source py/bin/activate
+    $ source ~/py/bin/activate
     $ make html
 
 The rendered documentation can now be found in `_build/html/`.
 
 Or to render as a PDF, do::
 
-    $ source py/bin/activate
+    $ source ~/py/bin/activate
     $ make latexpdf
 
 *Note: Additional texlive packages may need to be installed for PDF
@@ -79,5 +79,5 @@ Running the Examples
 
 To run the examples, do the following::
 
-    $ source py/bin/activate
+    $ source ~/py/bin/activate
     $ make doctest
