@@ -36,6 +36,7 @@ installed:
 
   - Ansible
   - OpenStack Client
+  - Shade
   - Sphinx
 
 Follow the steps below to perform the installation.
