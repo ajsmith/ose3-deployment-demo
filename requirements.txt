@@ -1,3 +1,4 @@
 Sphinx
 ansible
 python-openstackclient
+shade
