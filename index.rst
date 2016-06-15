@@ -3,8 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to OSE3 Advanced Enablement Homework's documentation!
-=============================================================
+=================================
+OSE3 Advanced Enablement Homework
+=================================
 
 Contents:
 
