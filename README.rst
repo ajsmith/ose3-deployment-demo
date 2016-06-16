@@ -84,10 +84,10 @@ few manual steps to setup your environment, the deployment is fully automated.
 
 To tell which steps are manual and which are executed:
 
-  - Examples prefixed with `>>>` are executable and will be run as part of the
+  - Examples prefixed with ">>>" are executable and will be run as part of the
     demo.
 
-  - Shell instructions (prefixed with `$` or `#`) are *not* executable and must
+  - Shell instructions (prefixed with "$" or "#") are *not* executable and must
     be performed manually.
 
 
