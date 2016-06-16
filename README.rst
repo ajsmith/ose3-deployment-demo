@@ -34,24 +34,24 @@ Installation
 To build documentation and run the examples, the following Python packages are
 installed:
 
-  - Ansible
-  - OpenStack Client
-  - Shade
-  - Sphinx
+- Ansible
+- OpenStack Client
+- Shade
+- Sphinx
 
 Follow the steps below to perform the installation.
 
 *Note: Installation does not require root privileges.*
 
- #. Set up a virtualenv site::
+#. Set up a virtualenv site::
 
     $ virtualenv ~/py
 
- #. Activate the virtualenv::
+#. Activate the virtualenv::
 
     $ source ~/py/bin/activate
 
- #. Install tools::
+#. Install tools::
 
     $ pip install -r requirements.txt
 
@@ -84,11 +84,11 @@ few manual steps to setup your environment, the deployment is fully automated.
 
 To tell which steps are manual and which are executed:
 
-  - Examples prefixed with ">>>" are executable and will be run as part of the
-    demo.
+- Examples prefixed with ">>>" are executable and will be run as part of the
+  demo.
 
-  - Shell instructions (prefixed with "$" or "#") are *not* executable and must
-    be performed manually.
+- Shell instructions (prefixed with "$" or "#") are *not* executable and must
+  be performed manually.
 
 
 Environment Setup
@@ -98,10 +98,10 @@ Running the examples depend on your environment being set up to authenticate
 with an OpenStack environment. You will need to download your "openrc.sh" file
 from the OpenStack dashboard. To do so:
 
- #. Sign in to the OpenStack Dashboard
- #. Go to the "Access & Security" page
- #. Click on the "API Access" tab
- #. Click the "Download OpenStack RC File" button
+#. Sign in to the OpenStack Dashboard
+#. Go to the "Access & Security" page
+#. Click on the "API Access" tab
+#. Click the "Download OpenStack RC File" button
 
 Once you've downloaded your RC file, add to your environment::
 
