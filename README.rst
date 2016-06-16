@@ -75,10 +75,46 @@ Or to render as a PDF, do::
 generation.*
 
 
-Running the Examples
-====================
+Demo
+====
 
-To run the examples, do the following::
+The documentation presented here isn't just for reading. You can run it too!
+Running this document will demonstrate the full OSE3 deployment. Aside from a
+few manual steps to setup your environment, the deployment is fully automated.
+
+To tell which steps are manual and which are executed:
+
+  - Examples prefixed with `>>>` are executable and will be run as part of the
+    demo.
+
+  - Shell instructions (prefixed with `$` or `#`) are *not* executable and must
+    be performed manually.
+
+
+Environment Setup
+-----------------
+
+Running the examples depend on your environment being set up to authenticate
+with an OpenStack environment. You will need to download your "openrc.sh" file
+from the OpenStack dashboard. To do so:
+
+ #. Sign in to the OpenStack Dashboard
+ #. Go to the "Access & Security" page
+ #. Click on the "API Access" tab
+ #. Click the "Download OpenStack RC File" button
+
+Once you've downloaded your RC file, add to your environment::
+
+    $ source myproject-openrc.sh
+
+
+Running the Demo
+================
+
+Once you've performed the installation and environment setup steps above,
+you'll be ready to run the demo!
+
+To run the thing, do::
 
     $ source ~/py/bin/activate
     $ make doctest
