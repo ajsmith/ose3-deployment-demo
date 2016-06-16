@@ -109,7 +109,7 @@ Once you've downloaded your RC file, add to your environment::
 
 
 Running the Demo
-================
+----------------
 
 Once you've performed the installation and environment setup steps above,
 you'll be ready to run the demo!
