@@ -102,7 +102,7 @@ Now let's run it.
     PLAY [provision server resources in OpenStack] *********************************
     <BLANKLINE>
     TASK [setup] *******************************************************************
-    ok: [localhost]
+    ...: [localhost]
     <BLANKLINE>
     TASK [create OSE master root volumes] ******************************************
     ...: [localhost] => (item=ose-master-1-root-vol)
@@ -133,20 +133,20 @@ Now let's run it.
     ...: [localhost] => (item=ose-master-2)
     ...: [localhost] => (item=ose-master-3)
     <BLANKLINE>
-    TASK [create OSE node instances] *********************************************
+    TASK [create OSE node instances] ***********************************************
     ...: [localhost] => (item=ose-node-1)
     ...: [localhost] => (item=ose-node-2)
     ...: [localhost] => (item=ose-node-3)
     ...: [localhost] => (item=ose-node-4)
     <BLANKLINE>
-    TASK [create LB instances] *********************************************
+    TASK [create LB instances] *****************************************************
     ...: [localhost] => (item=ose-lb-1)
     ...: [localhost] => (item=ose-lb-2)
     <BLANKLINE>
-    TASK [create DNS instance] *********************************************
+    TASK [create DNS instance] *****************************************************
     ...: [localhost]
     <BLANKLINE>
     PLAY RECAP *********************************************************************
-    localhost                  : ok=7    changed=...    unreachable=0    failed=0
+    localhost                  : ok=10   changed=...    unreachable=0    failed=0
     <BLANKLINE>
     0
