@@ -9,9 +9,13 @@ About OSE Advanced Enablement Homework
 The purpose of this project is to document and demonstrate an OSE 3.2
 deployment in an HA configuration using an OpenStack cloud provider.
 
-OS1 Public is the targeted OpenStack cloud platform, and this project has only
-been tested against that environment. Other OpenStack environments will likely
-work too, but may require minor modifications.
+Now there are a couple ways of using this document. One way is to read through
+it, and follow the examples step by step. The *other* way is to run it, and let
+the examples deploy OSE for you, automatically.
+
+Yes, that's right. This is an executable document, and it can build your whole
+OSE3 environment for you! The instructions later in this document will walk you
+through the process, and it's really, really easy :)
 
 
 Requirements
@@ -22,10 +26,10 @@ System Requirements
 -------------------
 
 Python 2.7 or higher is required to build the documentation and run the
-examples. Python virtualenv is also recommended.
+examples.
 
-This project has been tested on Fedora 23, but should work on most modern Red
-Hat Linuxes.
+This project has been tested on Fedora 23, but should work on other flavors of
+Red Hat Linux.
 
 On recent versions of Fedora, these can be installed using:
 
@@ -56,6 +60,10 @@ OS1/OpenStack
 An active OpenStack login is required in OS1 Public (other OpenStack
 environments may work too, but are untested). You need permissions to manage
 instances, volumes, images, floating IPs, SSH keys, and security groups.
+
+OS1 Public is the targeted OpenStack cloud platform, and this project has only
+been tested against that environment. Other OpenStack environments will likely
+work too, but may require minor modifications.
 
 
 Installation
