@@ -1,0 +1,96 @@
+- name: provision server resources in OpenStack
+  hosts: localhost
+  vars:
+    master_count: 3
+    node_count: 4
+    lb_count: 2
+    namespace: demo
+    os_key_name: demo-keys
+    master_security_groups:
+      - default
+    node_security_groups:
+      - default
+    lb_security_groups:
+      - default
+    dns_security_groups:
+      - default
+  tasks:
+
+    - name: create OSE master root volumes
+      os_volume:
+        state: present
+        size: 40
+        image: RHEL7
+        display_name: "{{ namespace }}-{{ item }}"
+      with_sequence: start=1 end={{ master_count }} format=ose-master-%d-root-vol
+
+    - name: create OSE node root volumes
+      os_volume:
+        state: present
+        size: 25
+        image: RHEL7
+        display_name: "{{ namespace }}-{{ item }}"
+      with_sequence: start=1 end={{ node_count }} format=ose-node-%d-root-vol
+
+    - name: create LB root volumes
+      os_volume:
+        state: present
+        size: 20
+        image: RHEL7
+        display_name: "{{ namespace }}-{{ item }}"
+      with_sequence: start=1 end={{ lb_count }} format=ose-lb-%d-root-vol
+
+    - name: create DNS root volume
+      os_volume:
+        state: present
+        size: 20
+        image: RHEL7
+        display_name: "{{ namespace }}-ose-dns"
+
+    - name: create Docker storage volumes for OSE nodes
+      os_volume:
+        state: present
+        size: 15
+        display_name: "{{ namespace }}-{{ item }}"
+      with_sequence: start=1 end={{ node_count }} format=ose-node-%d-docker-vol
+
+    - name: create OSE master instances
+      os_server:
+        name: "{{ namespace }}-{{ item }}"
+        state: present
+        flavor: m1.medium
+        boot_volume: "{{ namespace }}-{{ item }}-root-vol"
+        key_name: "{{ os_key_name }}"
+        security_groups: "{{ master_security_groups }}"
+      with_sequence: start=1 end={{ master_count }} format=ose-master-%d
+
+    - name: create OSE node instances
+      os_server:
+        name: "{{ namespace }}-{{ item }}"
+        state: present
+        flavor: m1.medium
+        boot_volume: "{{ namespace }}-{{ item }}-root-vol"
+        key_name: "{{ os_key_name }}"
+        security_groups: "{{ node_security_groups }}"
+        volumes:
+          - "{{ namespace }}-{{ item }}-docker-vol"
+      with_sequence: start=1 end={{ node_count }} format=ose-node-%d
+
+    - name: create LB instances
+      os_server:
+        name: "{{ namespace }}-{{ item }}"
+        state: present
+        flavor: m1.medium
+        boot_volume: "{{ namespace }}-{{ item }}-root-vol"
+        key_name: "{{ os_key_name }}"
+        security_groups: "{{ lb_security_groups }}"
+      with_sequence: start=1 end={{ lb_count }} format=ose-lb-%d
+
+    - name: create DNS instance
+      os_server:
+        name: "{{ namespace }}-ose-dns"
+        state: present
+        flavor: m1.medium
+        boot_volume: "{{ namespace }}-ose-dns-root-vol"
+        key_name: "{{ os_key_name }}"
+        security_groups: "{{ dns_security_groups }}"

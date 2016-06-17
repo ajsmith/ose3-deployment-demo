@@ -14,6 +14,7 @@ Contents:
 
    README
    architecture
+   openstack
 
 
 Indices and tables
