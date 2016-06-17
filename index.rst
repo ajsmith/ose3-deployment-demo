@@ -15,3 +15,4 @@ Contents:
    README
    architecture
    openstack
+   inventory
