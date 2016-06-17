@@ -45,7 +45,7 @@
         state: present
         size: 20
         image: RHEL7
-        display_name: "{{ namespace }}-ose-dns"
+        display_name: "{{ namespace }}-ose-dns-root-vol"
 
     - name: create Docker storage volumes for OSE nodes
       os_volume:
