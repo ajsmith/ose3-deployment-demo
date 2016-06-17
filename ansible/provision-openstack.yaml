@@ -4,6 +4,7 @@
     master_count: 3
     node_count: 4
     lb_count: 2
+    namespace: demo
     master_security_groups:
       - default
     node_security_groups:

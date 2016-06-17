@@ -153,8 +153,6 @@ specific environment. These should be placed in the following file:
 There is an example file in that directory named `openstack.yaml.example` which
 you can copy and customize as needed. The following items can be configured:
 
-- `namespace`: A namespace prefix to use when creating instances, volumes, and
-  other objects.
 - `openstack_ssh_key`: The ssh key to assign to instances. This should be the
   same key used by Ansible.
 
