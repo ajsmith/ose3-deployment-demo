@@ -91,8 +91,8 @@ To tell which steps are manual and which are executed:
   be performed manually.
 
 
-Environment Setup
------------------
+OpenStack Environment Setup
+---------------------------
 
 Running the examples depend on your environment being set up to authenticate
 with an OpenStack environment. You will need to download your "openrc.sh" file
@@ -106,6 +106,14 @@ from the OpenStack dashboard. To do so:
 Once you've downloaded your RC file, add to your environment::
 
     $ source myproject-openrc.sh
+
+
+RHN Setup
+---------
+
+RHN registration information must be provided to install required
+packages. Either a username/password or an activation key may be used. This is
+set in the "rhn-setup.yaml" playbook.
 
 
 Running the Demo
