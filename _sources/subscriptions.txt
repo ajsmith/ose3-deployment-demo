@@ -1,0 +1,6 @@
+=================
+RHN Subscriptions
+=================
+
+RHN subscriptions are required to update the instances to the latest version of
+RHEL and install OSE3 packages.

@@ -62,11 +62,11 @@ examples.</p>
 <p>This project has been tested on Fedora 23, but should work on other flavors of
 Red Hat Linux.</p>
 <p>On recent versions of Fedora, these can be installed using:</p>
-<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># dnf install python python-virtualenv redhat-rpm-config openssl-devel</span>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># dnf install python python-virtualenv redhat-rpm-config openssl-devel git</span>
 </pre></div>
 </div>
 <p>On RHEL or older versions of Fedora, install by running:</p>
-<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># yum install python python-virtualenv redhat-rpm-config openssl-devel</span>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># yum install python python-virtualenv redhat-rpm-config openssl-devel git</span>
 </pre></div>
 </div>
 <p>If you simply wish to read the documentation without fancy rendering or running
@@ -97,6 +97,11 @@ installed:</p>
 <li>Shade</li>
 <li>Sphinx</li>
 </ul>
+<p>If you haven&#8217;t done so already, now would be a good time to check out the code.</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ git clone https://github.com/ajsmith/ose3-deployment-demo.git
+$ <span class="nb">cd</span> ose3-deployment-demo
+</pre></div>
+</div>
 <p>Follow the steps below to perform the installation:</p>
 <p><em>Note: Installation does not require root privileges.</em></p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span>$ virtualenv ~/py
@@ -148,24 +153,37 @@ from the OpenStack dashboard. To do so:</p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> myproject-openrc.sh
 </pre></div>
 </div>
-<p>You&#8217;ll also need to configure some Ansible variables to match your
-specific environment. These should be placed in the following file:</p>
-<blockquote>
-<div><cite>ansible/vars/openstack.yaml</cite></div></blockquote>
-<p>There is an example file in that directory named <cite>openstack.yaml.example</cite> which
-you can copy and customize as needed. The following items can be configured:</p>
-<ul class="simple">
-<li><cite>namespace</cite>: A namespace prefix to use when creating instances, volumes, and
-other objects.</li>
-<li><cite>openstack_ssh_key</cite>: The ssh key to assign to instances. This should be the
-same key used by Ansible.</li>
-</ul>
+<p>You&#8217;ll also need to configure some Ansible variables to match your specific
+environment. These settings are configured in &#8216;ansible/vars/openstack.yaml&#8217;. An
+example file lives in the same directory (named &#8216;openstack.yaml.example&#8217;) which
+you can copy and customize.</p>
+<div class="literal-block-wrapper container" id="ansible-vars-openstack-yaml-example">
+<div class="code-block-caption"><span class="caption-text">ansible/vars/openstack.yaml.example</span><a class="headerlink" href="#ansible-vars-openstack-yaml-example" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># SSH key to assign to server instances. This should be the same key used by</span>
+<span class="c1"># Ansible.</span>
+<span class="l l-Scalar l-Scalar-Plain">openstack_key_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-keys</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="rhn-setup">
 <h3>RHN Setup<a class="headerlink" href="#rhn-setup" title="Permalink to this headline">¶</a></h3>
-<p>RHN registration information must be provided to install required
-packages. Either a username/password or an activation key may be used. This is
-set in the &#8220;rhn-setup.yaml&#8221; playbook.</p>
+<p>RHN registration information needs to be configured in order to update RHEL and
+install OSE packages. A username, password, and a pool ID must be
+provided. These settings are configured in &#8216;ansible/vars/rhn.yaml&#8217;. An example
+file lives in the same directory (named &#8216;rhn.yaml.example&#8217;) which you can copy
+and customize.</p>
+<div class="literal-block-wrapper container" id="ansible-vars-rhn-yaml-example">
+<div class="code-block-caption"><span class="caption-text">ansible/vars/rhn.yaml.example</span><a class="headerlink" href="#ansible-vars-rhn-yaml-example" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># RHN username</span>
+<span class="l l-Scalar l-Scalar-Plain">rh_username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">user@example.com</span>
+<span class="c1"># RHN password</span>
+<span class="l l-Scalar l-Scalar-Plain">rh_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5ecret</span>
+<span class="c1"># Pool ID to attach to instances</span>
+<span class="l l-Scalar l-Scalar-Plain">rh_pool_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">s0m3l0ngh4shc0d3</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="running-the-demo">
 <h3>Running the Demo<a class="headerlink" href="#running-the-demo" title="Permalink to this headline">¶</a></h3>

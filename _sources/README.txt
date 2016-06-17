@@ -35,13 +35,13 @@ On recent versions of Fedora, these can be installed using:
 
 .. code-block:: shell
 
-    # dnf install python python-virtualenv redhat-rpm-config openssl-devel
+    # dnf install python python-virtualenv redhat-rpm-config openssl-devel git
 
 On RHEL or older versions of Fedora, install by running:
 
 .. code-block:: shell
 
-    # yum install python python-virtualenv redhat-rpm-config openssl-devel
+    # yum install python python-virtualenv redhat-rpm-config openssl-devel git
 
 If you simply wish to read the documentation without fancy rendering or running
 the examples, only a basic text editor is required.
@@ -76,6 +76,13 @@ installed:
 - OpenStack Client
 - Shade
 - Sphinx
+
+If you haven't done so already, now would be a good time to check out the code.
+
+.. code-block:: shell
+
+    $ git clone https://github.com/ajsmith/ose3-deployment-demo.git
+    $ cd ose3-deployment-demo
 
 Follow the steps below to perform the installation:
 
@@ -145,26 +152,28 @@ Once you've downloaded your RC file, add to your environment:
 
     $ source myproject-openrc.sh
 
-You'll also need to configure some Ansible variables to match your
-specific environment. These should be placed in the following file:
+You'll also need to configure some Ansible variables to match your specific
+environment. These settings are configured in 'ansible/vars/openstack.yaml'. An
+example file lives in the same directory (named 'openstack.yaml.example') which
+you can copy and customize.
 
-    `ansible/vars/openstack.yaml`
-
-There is an example file in that directory named `openstack.yaml.example` which
-you can copy and customize as needed. The following items can be configured:
-
-- `namespace`: A namespace prefix to use when creating instances, volumes, and
-  other objects.
-- `openstack_ssh_key`: The ssh key to assign to instances. This should be the
-  same key used by Ansible.
+.. literalinclude:: ansible/vars/openstack.yaml.example
+   :caption:
+   :language: yaml
 
 
 RHN Setup
 ---------
 
-RHN registration information must be provided to install required
-packages. Either a username/password or an activation key may be used. This is
-set in the "rhn-setup.yaml" playbook.
+RHN registration information needs to be configured in order to update RHEL and
+install OSE packages. A username, password, and a pool ID must be
+provided. These settings are configured in 'ansible/vars/rhn.yaml'. An example
+file lives in the same directory (named 'rhn.yaml.example') which you can copy
+and customize.
+
+.. literalinclude:: ansible/vars/rhn.yaml.example
+   :caption:
+   :language: yaml
 
 
 Running the Demo
