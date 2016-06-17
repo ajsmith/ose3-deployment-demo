@@ -127,8 +127,8 @@ demo.</li>
 <li>Shell instructions (prefixed with &#8220;$&#8221; or &#8220;#&#8221;) are <em>not</em> executable and must
 be performed manually.</li>
 </ul>
-<div class="section" id="openstack-environment-setup">
-<h3>OpenStack Environment Setup<a class="headerlink" href="#openstack-environment-setup" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="openstack-setup">
+<h3>OpenStack Setup<a class="headerlink" href="#openstack-setup" title="Permalink to this headline">¶</a></h3>
 <p>Running the examples depend on your environment being set up to authenticate
 with an OpenStack environment. You will need to download your &#8220;openrc.sh&#8221; file
 from the OpenStack dashboard. To do so:</p>
@@ -142,6 +142,18 @@ from the OpenStack dashboard. To do so:</p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> myproject-openrc.sh
 </pre></div>
 </div>
+<p>You&#8217;ll also need to configure some Ansible variables to match your
+specific environment. These should be placed in the following file:</p>
+<blockquote>
+<div><cite>ansible/vars/openstack.yaml</cite></div></blockquote>
+<p>There is an example file in that directory named <cite>openstack.yaml.example</cite> which
+you can copy and customize as needed. The following items can be configured:</p>
+<ul class="simple">
+<li><cite>namespace</cite>: A namespace prefix to use when creating instances, volumes, and
+other objects.</li>
+<li><cite>openstack_ssh_key</cite>: The ssh key to assign to instances. This should be the
+same key used by Ansible.</li>
+</ul>
 </div>
 <div class="section" id="rhn-setup">
 <h3>RHN Setup<a class="headerlink" href="#rhn-setup" title="Permalink to this headline">¶</a></h3>
@@ -184,7 +196,7 @@ so grab some coffee, sit back, and enjoy the show!</p>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a></li>
 <li><a class="reference internal" href="#demo">Demo</a><ul>
-<li><a class="reference internal" href="#openstack-environment-setup">OpenStack Environment Setup</a></li>
+<li><a class="reference internal" href="#openstack-setup">OpenStack Setup</a></li>
 <li><a class="reference internal" href="#rhn-setup">RHN Setup</a></li>
 <li><a class="reference internal" href="#running-the-demo">Running the Demo</a></li>
 </ul>

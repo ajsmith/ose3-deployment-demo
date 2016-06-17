@@ -24,6 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="next" title="Inventory" href="inventory.html" />
     <link rel="prev" title="Architecture Overview" href="architecture.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -103,16 +104,14 @@ in these examples.</p>
 <h2>Provisioning<a class="headerlink" href="#provisioning" title="Permalink to this headline">¶</a></h2>
 <p>At this point, we can begin provisioning. We&#8217;ll use the Ansible OpenStack
 modules. Here&#8217;s our playbook:</p>
-<div class="literal-block-wrapper container" id="playbooks-provision-openstack-yaml">
-<div class="code-block-caption"><span class="caption-text">playbooks/provision-openstack.yaml</span><a class="headerlink" href="#playbooks-provision-openstack-yaml" title="Permalink to this code">¶</a></div>
+<div class="literal-block-wrapper container" id="ansible-provision-openstack-yaml">
+<div class="code-block-caption"><span class="caption-text">ansible/provision-openstack.yaml</span><a class="headerlink" href="#ansible-provision-openstack-yaml" title="Permalink to this code">¶</a></div>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">provision server resources in OpenStack</span>
   <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
   <span class="l l-Scalar l-Scalar-Plain">vars</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">master_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
     <span class="l l-Scalar l-Scalar-Plain">node_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
     <span class="l l-Scalar l-Scalar-Plain">lb_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-    <span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
-    <span class="l l-Scalar l-Scalar-Plain">os_key_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-keys</span>
     <span class="l l-Scalar l-Scalar-Plain">master_security_groups</span><span class="p p-Indicator">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
     <span class="l l-Scalar l-Scalar-Plain">node_security_groups</span><span class="p p-Indicator">:</span>
@@ -121,6 +120,8 @@ modules. Here&#8217;s our playbook:</p>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
     <span class="l l-Scalar l-Scalar-Plain">dns_security_groups</span><span class="p p-Indicator">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="l l-Scalar l-Scalar-Plain">vars_files</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vars/openstack.yaml</span>
   <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
 
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE master root volumes</span>
@@ -167,7 +168,7 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
         <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
         <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
-        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">master_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
       <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ master_count }} format=ose-master-%d</span>
 
@@ -177,7 +178,7 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
         <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
         <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
-        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">node_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
           <span class="p p-Indicator">-</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-docker-vol&quot;</span>
@@ -189,7 +190,7 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
         <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
         <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
-        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lb_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
       <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ lb_count }} format=ose-lb-%d</span>
 
@@ -199,7 +200,7 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
         <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
         <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-dns-root-vol&quot;</span>
-        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">dns_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
 </pre></div>
 </div>
@@ -212,7 +213,7 @@ modules. Here&#8217;s our playbook:</p>
  <span class="o">...</span>     <span class="n">cli</span> <span class="o">=</span> <span class="n">ansible</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">PlaybookCLI</span><span class="p">([</span><span class="s1">&#39;ansible-playbook&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">)</span>
  <span class="o">...</span>     <span class="n">cli</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
  <span class="o">...</span>     <span class="k">return</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
- <span class="o">&gt;&gt;&gt;</span> <span class="n">run_playbook</span><span class="p">(</span><span class="s1">&#39;playbooks/provision-openstack.yaml&#39;</span><span class="p">)</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">run_playbook</span><span class="p">(</span><span class="s1">&#39;ansible/provision-openstack.yaml&#39;</span><span class="p">)</span>
 
  <span class="n">PLAY</span> <span class="p">[</span><span class="n">provision</span> <span class="n">server</span> <span class="n">resources</span> <span class="ow">in</span> <span class="n">OpenStack</span><span class="p">]</span> <span class="o">*********************************</span>
 
@@ -262,7 +263,7 @@ modules. Here&#8217;s our playbook:</p>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
 
  <span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">*********************************************************************</span>
- <span class="n">localhost</span>                  <span class="p">:</span> <span class="n">ok</span><span class="o">=</span><span class="mi">10</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">localhost</span>                  <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
 
  <span class="mi">0</span>
 </pre></div>
@@ -294,6 +295,7 @@ modules. Here&#8217;s our playbook:</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="architecture.html" title="previous chapter">Architecture Overview</a></li>
+      <li>Next: <a href="inventory.html" title="next chapter">Inventory</a></li>
   </ul></li>
 </ul>
 </div>
