@@ -1,1 +1,2 @@
+# SSH key to assign to server instances
 openstack_key_name: demo-keys
