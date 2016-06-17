@@ -1,2 +1,3 @@
-# SSH key to assign to server instances
+# SSH key to assign to server instances. This should be the same key used by
+# Ansible.
 openstack_key_name: demo-keys
