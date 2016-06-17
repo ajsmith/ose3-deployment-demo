@@ -1,0 +1,337 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Deployment on OpenStack &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Architecture Overview" href="architecture.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="deployment-on-openstack">
+<h1>Deployment on OpenStack<a class="headerlink" href="#deployment-on-openstack" title="Permalink to this headline">¶</a></h1>
+<p>Here, we will provision the servers and other resources needed for the OSE3
+installation, specified in the <a class="reference internal" href="architecture.html"><span class="doc">architecture overview</span></a>.</p>
+<p>This deployment is targeted for use with the OS1 Public cloud. Other OpenStack
+clouds may be used but are untested. Modifications may be needed for these
+examples to work in other OpenStack environments.</p>
+<p>These examples assume you&#8217;re starting from scratch and have no existing
+instances. If you have existing instances, you&#8217;ll have to adjust these examples
+for your specific environment.</p>
+<div class="section" id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this headline">¶</a></h2>
+<p>The following examples require that your environment be configured with your
+OpenStack login credentials. This is typically accomplished by running:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> openrc.sh
+</pre></div>
+</div>
+<p>You can download the above file from the &#8220;Access &amp; Security&#8221; page in the
+OpenStack dashboard.</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="images">
+<h3>Images<a class="headerlink" href="#images" title="Permalink to this headline">¶</a></h3>
+<p>A valid RHEL 7 base image must be available prior to running these examples,
+and it must be named &#8216;RHEL7&#8217;. This image will be used to provision the servers
+in these examples.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">openstackclient.shell</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shlex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">openstackclient</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;image show RHEL7&#39;</span><span class="p">))</span>
+<span class="go">+------------------+------------------------------------------------------+</span>
+<span class="go">| Field            | Value                                                |</span>
+<span class="go">+------------------+------------------------------------------------------+</span>
+<span class="gp">...</span>
+<span class="go">| name             | RHEL7                                                |</span>
+<span class="gp">...</span>
+<span class="go">+------------------+------------------------------------------------------+</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="flavors">
+<h3>Flavors<a class="headerlink" href="#flavors" title="Permalink to this headline">¶</a></h3>
+<p>All instances use the &#8220;m1.medium&#8221; flavor, which has 2 CPUs and 4GB RAM.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">openstackclient</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;flavor show m1.medium&#39;</span><span class="p">))</span>
+<span class="go">+----------------------------+--------------------------------------+</span>
+<span class="go">| Field                      | Value                                |</span>
+<span class="go">+----------------------------+--------------------------------------+</span>
+<span class="gp">...</span>
+<span class="go">| name                       | m1.medium                            |</span>
+<span class="gp">...</span>
+<span class="go">| ram                        | 4096                                 |</span>
+<span class="gp">...</span>
+<span class="go">| vcpus                      | 2                                    |</span>
+<span class="go">+----------------------------+--------------------------------------+</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="provisioning">
+<h2>Provisioning<a class="headerlink" href="#provisioning" title="Permalink to this headline">¶</a></h2>
+<p>At this point, we can begin provisioning. We&#8217;ll use the Ansible OpenStack
+modules. Here&#8217;s our playbook:</p>
+<div class="literal-block-wrapper container" id="playbooks-provision-openstack-yaml">
+<div class="code-block-caption"><span class="caption-text">playbooks/provision-openstack.yaml</span><a class="headerlink" href="#playbooks-provision-openstack-yaml" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">provision server resources in OpenStack</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">localhost</span>
+  <span class="l l-Scalar l-Scalar-Plain">vars</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">master_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+    <span class="l l-Scalar l-Scalar-Plain">node_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+    <span class="l l-Scalar l-Scalar-Plain">lb_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+    <span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
+    <span class="l l-Scalar l-Scalar-Plain">os_key_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-keys</span>
+    <span class="l l-Scalar l-Scalar-Plain">master_security_groups</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+    <span class="l l-Scalar l-Scalar-Plain">node_security_groups</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+    <span class="l l-Scalar l-Scalar-Plain">lb_security_groups</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+    <span class="l l-Scalar l-Scalar-Plain">dns_security_groups</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE master root volumes</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+        <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ master_count }} format=ose-master-%d-root-vol</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE node root volumes</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">25</span>
+        <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ node_count }} format=ose-node-%d-root-vol</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create LB root volumes</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+        <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ lb_count }} format=ose-lb-%d-root-vol</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create DNS root volume</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+        <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-dns-root-vol&quot;</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create Docker storage volumes for OSE nodes</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ node_count }} format=ose-node-%d-docker-vol</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE master instances</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
+        <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">master_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ master_count }} format=ose-master-%d</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE node instances</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
+        <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">node_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-docker-vol&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ node_count }} format=ose-node-%d</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create LB instances</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
+        <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">lb_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ lb_count }} format=ose-lb-%d</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create DNS instance</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-dns&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
+        <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-dns-root-vol&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">os_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">dns_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
+</pre></div>
+</div>
+</div>
+<p>Now let&#8217;s run it.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">ansible.cli.playbook</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">run_playbook</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+ <span class="o">...</span>     <span class="s2">&quot;&quot;&quot;Helper function to run playbooks using the Playbook CLI.&quot;&quot;&quot;</span>
+ <span class="o">...</span>     <span class="n">argv</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+ <span class="o">...</span>     <span class="n">cli</span> <span class="o">=</span> <span class="n">ansible</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">PlaybookCLI</span><span class="p">([</span><span class="s1">&#39;ansible-playbook&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">)</span>
+ <span class="o">...</span>     <span class="n">cli</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+ <span class="o">...</span>     <span class="k">return</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">run_playbook</span><span class="p">(</span><span class="s1">&#39;playbooks/provision-openstack.yaml&#39;</span><span class="p">)</span>
+
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">provision</span> <span class="n">server</span> <span class="n">resources</span> <span class="ow">in</span> <span class="n">OpenStack</span><span class="p">]</span> <span class="o">*********************************</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">setup</span><span class="p">]</span> <span class="o">*******************************************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">master</span> <span class="n">root</span> <span class="n">volumes</span><span class="p">]</span> <span class="o">******************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">node</span> <span class="n">root</span> <span class="n">volumes</span><span class="p">]</span> <span class="o">********************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">LB</span> <span class="n">root</span> <span class="n">volumes</span><span class="p">]</span> <span class="o">**************************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">DNS</span> <span class="n">root</span> <span class="n">volume</span><span class="p">]</span> <span class="o">**************************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">Docker</span> <span class="n">storage</span> <span class="n">volumes</span> <span class="k">for</span> <span class="n">OSE</span> <span class="n">nodes</span><span class="p">]</span> <span class="o">*****************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">master</span> <span class="n">instances</span><span class="p">]</span> <span class="o">*********************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">node</span> <span class="n">instances</span><span class="p">]</span> <span class="o">***********************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">LB</span> <span class="n">instances</span><span class="p">]</span> <span class="o">*****************************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">DNS</span> <span class="n">instance</span><span class="p">]</span> <span class="o">*****************************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
+
+ <span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">*********************************************************************</span>
+ <span class="n">localhost</span>                  <span class="p">:</span> <span class="n">ok</span><span class="o">=</span><span class="mi">10</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+
+ <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Deployment on OpenStack</a><ul>
+<li><a class="reference internal" href="#environment">Environment</a></li>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li><a class="reference internal" href="#images">Images</a></li>
+<li><a class="reference internal" href="#flavors">Flavors</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#provisioning">Provisioning</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="architecture.html" title="previous chapter">Architecture Overview</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/openstack.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Alex Smith.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/openstack.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>README &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="next" title="Architecture Overview" href="architecture.html" />
+    <link rel="prev" title="OSE3 Advanced Enablement Homework" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="readme">
+<h1>README<a class="headerlink" href="#readme" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-ose-advanced-enablement-homework">
+<h2>About OSE Advanced Enablement Homework<a class="headerlink" href="#about-ose-advanced-enablement-homework" title="Permalink to this headline">¶</a></h2>
+<p>The purpose of this project is to document and demonstrate an OSE 3.2
+deployment in an HA configuration using an OpenStack cloud provider.</p>
+<p>OS1 Public is the targeted OpenStack cloud platform, and this project has only
+been tested against that environment. Other OpenStack environments will likely
+work too, but may require minor modifications.</p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="system-requirements">
+<h3>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h3>
+<p>Python 2.7 or higher is required to build the documentation and run the
+examples. Python virtualenv is also recommended.</p>
+<p>This project has been tested on Fedora 23, but should work on most modern Red
+Hat Linuxes.</p>
+<p>On recent versions of Fedora, these can be installed using:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># dnf install python python-virtualenv redhat-rpm-config openssl-devel</span>
+</pre></div>
+</div>
+<p>On RHEL or older versions of Fedora, install by running:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># yum install python python-virtualenv redhat-rpm-config openssl-devel</span>
+</pre></div>
+</div>
+<p>If you simply wish to read the documentation without fancy rendering or running
+the examples, only a basic text editor is required.</p>
+</div>
+<div class="section" id="rhn">
+<h3>RHN<a class="headerlink" href="#rhn" title="Permalink to this headline">¶</a></h3>
+<p>An active RHN login is required and you need available subscriptions for RHEL7
+and OSE3.2 repositories.</p>
+</div>
+<div class="section" id="os1-openstack">
+<h3>OS1/OpenStack<a class="headerlink" href="#os1-openstack" title="Permalink to this headline">¶</a></h3>
+<p>An active OpenStack login is required in OS1 Public (other OpenStack
+environments may work too, but are untested). You need permissions to manage
+instances, volumes, images, floating IPs, SSH keys, and security groups.</p>
+</div>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>To build documentation and run the examples, the following Python packages are
+installed:</p>
+<ul class="simple">
+<li>Ansible</li>
+<li>OpenStack Client</li>
+<li>Shade</li>
+<li>Sphinx</li>
+</ul>
+<p>Follow the steps below to perform the installation:</p>
+<p><em>Note: Installation does not require root privileges.</em></p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ virtualenv ~/py
+$ <span class="nb">source</span> ~/py/bin/activate
+$ pip install -r requirements.txt
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-the-documentation">
+<h2>Building the Documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>To build the HTML documentation, do the following:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> ~/py/bin/activate
+$ make html
+</pre></div>
+</div>
+<p>The rendered documentation can now be found in <cite>_build/html/</cite>.</p>
+<p>Or to render as a PDF, do:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> ~/py/bin/activate
+$ make latexpdf
+</pre></div>
+</div>
+<p><em>Note: Additional texlive packages may need to be installed for PDF
+generation.</em></p>
+</div>
+<div class="section" id="demo">
+<h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">¶</a></h2>
+<p>The documentation presented here isn&#8217;t just for reading. You can run it too!
+Running this document will demonstrate the full OSE3 deployment. Aside from a
+few manual steps to setup your environment, the deployment is fully automated.</p>
+<p>To tell which steps are manual and which are executed:</p>
+<ul class="simple">
+<li>Examples prefixed with &#8220;&gt;&gt;&gt;&#8221; are executable and will be run as part of the
+demo.</li>
+<li>Shell instructions (prefixed with &#8220;$&#8221; or &#8220;#&#8221;) are <em>not</em> executable and must
+be performed manually.</li>
+</ul>
+<div class="section" id="openstack-environment-setup">
+<h3>OpenStack Environment Setup<a class="headerlink" href="#openstack-environment-setup" title="Permalink to this headline">¶</a></h3>
+<p>Running the examples depend on your environment being set up to authenticate
+with an OpenStack environment. You will need to download your &#8220;openrc.sh&#8221; file
+from the OpenStack dashboard. To do so:</p>
+<ol class="arabic simple">
+<li>Sign in to the OpenStack Dashboard</li>
+<li>Go to the &#8220;Access &amp; Security&#8221; page</li>
+<li>Click on the &#8220;API Access&#8221; tab</li>
+<li>Click the &#8220;Download OpenStack RC File&#8221; button</li>
+</ol>
+<p>Once you&#8217;ve downloaded your RC file, add to your environment:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> myproject-openrc.sh
+</pre></div>
+</div>
+</div>
+<div class="section" id="rhn-setup">
+<h3>RHN Setup<a class="headerlink" href="#rhn-setup" title="Permalink to this headline">¶</a></h3>
+<p>RHN registration information must be provided to install required
+packages. Either a username/password or an activation key may be used. This is
+set in the &#8220;rhn-setup.yaml&#8221; playbook.</p>
+</div>
+<div class="section" id="running-the-demo">
+<h3>Running the Demo<a class="headerlink" href="#running-the-demo" title="Permalink to this headline">¶</a></h3>
+<p>Once you&#8217;ve performed the installation and environment setup steps above,
+you&#8217;ll be ready to run the demo!</p>
+<p>To run the thing, do:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> ~/py/bin/activate
+$ make doctest
+</pre></div>
+</div>
+<p>Keep in mind this demo sets up an entire OSE environment from scratch and as
+such can take a very long time to run (perhaps hours). Still, it beats typing,
+so grab some coffee, sit back, and enjoy the show!</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">README</a><ul>
+<li><a class="reference internal" href="#about-ose-advanced-enablement-homework">About OSE Advanced Enablement Homework</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a><ul>
+<li><a class="reference internal" href="#system-requirements">System Requirements</a></li>
+<li><a class="reference internal" href="#rhn">RHN</a></li>
+<li><a class="reference internal" href="#os1-openstack">OS1/OpenStack</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#building-the-documentation">Building the Documentation</a></li>
+<li><a class="reference internal" href="#demo">Demo</a><ul>
+<li><a class="reference internal" href="#openstack-environment-setup">OpenStack Environment Setup</a></li>
+<li><a class="reference internal" href="#rhn-setup">RHN Setup</a></li>
+<li><a class="reference internal" href="#running-the-demo">Running the Demo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">OSE3 Advanced Enablement Homework</a></li>
+      <li>Next: <a href="architecture.html" title="next chapter">Architecture Overview</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/README.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Alex Smith.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/README.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
