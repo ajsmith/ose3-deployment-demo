@@ -126,3 +126,7 @@ To run the thing, do::
 
     $ source ~/py/bin/activate
     $ make doctest
+
+Keep in mind this demo sets up an entire OSE environment from scratch and as
+such can take a very long time to run (perhaps hours). Still, it beats typing,
+so grab some coffee and watch the show!
