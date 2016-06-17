@@ -46,18 +46,21 @@
 <h2>About OSE Advanced Enablement Homework<a class="headerlink" href="#about-ose-advanced-enablement-homework" title="Permalink to this headline">¶</a></h2>
 <p>The purpose of this project is to document and demonstrate an OSE 3.2
 deployment in an HA configuration using an OpenStack cloud provider.</p>
-<p>OS1 Public is the targeted OpenStack cloud platform, and this project has only
-been tested against that environment. Other OpenStack environments will likely
-work too, but may require minor modifications.</p>
+<p>Now there are a couple ways of using this document. One way is to read through
+it, and follow the examples step by step. The <em>other</em> way is to run it, and let
+the examples deploy OSE for you, automatically.</p>
+<p>Yes, that&#8217;s right. This is an executable document, and it can build your whole
+OSE3 environment for you! The instructions later in this document will walk you
+through the process, and it&#8217;s really, really easy :)</p>
 </div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="system-requirements">
 <h3>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h3>
 <p>Python 2.7 or higher is required to build the documentation and run the
-examples. Python virtualenv is also recommended.</p>
-<p>This project has been tested on Fedora 23, but should work on most modern Red
-Hat Linuxes.</p>
+examples.</p>
+<p>This project has been tested on Fedora 23, but should work on other flavors of
+Red Hat Linux.</p>
 <p>On recent versions of Fedora, these can be installed using:</p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># dnf install python python-virtualenv redhat-rpm-config openssl-devel</span>
 </pre></div>
@@ -79,6 +82,9 @@ and OSE3.2 repositories.</p>
 <p>An active OpenStack login is required in OS1 Public (other OpenStack
 environments may work too, but are untested). You need permissions to manage
 instances, volumes, images, floating IPs, SSH keys, and security groups.</p>
+<p>OS1 Public is the targeted OpenStack cloud platform, and this project has only
+been tested against that environment. Other OpenStack environments will likely
+work too, but may require minor modifications.</p>
 </div>
 </div>
 <div class="section" id="installation">
