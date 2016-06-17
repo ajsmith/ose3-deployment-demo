@@ -1,0 +1,2 @@
+namespace: demo
+openstack_key_name: demo-keys

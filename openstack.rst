@@ -81,7 +81,7 @@ Provisioning
 At this point, we can begin provisioning. We'll use the Ansible OpenStack
 modules. Here's our playbook:
 
-.. literalinclude:: playbooks/provision-openstack.yaml
+.. literalinclude:: ansible/provision-openstack.yaml
    :caption:
    :language: yaml
 
@@ -97,7 +97,7 @@ Now let's run it.
     ...     cli = ansible.cli.playbook.PlaybookCLI(['ansible-playbook'] + argv)
     ...     cli.parse()
     ...     return cli.run()
-    >>> run_playbook('playbooks/provision-openstack.yaml')
+    >>> run_playbook('ansible/provision-openstack.yaml')
     <BLANKLINE>
     PLAY [provision server resources in OpenStack] *********************************
     <BLANKLINE>
@@ -147,6 +147,6 @@ Now let's run it.
     ...: [localhost]
     <BLANKLINE>
     PLAY RECAP *********************************************************************
-    localhost                  : ok=10   changed=...    unreachable=0    failed=0
+    localhost                  : ok=...   changed=...    unreachable=0    failed=0
     <BLANKLINE>
     0

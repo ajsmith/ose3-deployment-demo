@@ -4,8 +4,6 @@
     master_count: 3
     node_count: 4
     lb_count: 2
-    namespace: demo
-    os_key_name: demo-keys
     master_security_groups:
       - default
     node_security_groups:
@@ -14,6 +12,8 @@
       - default
     dns_security_groups:
       - default
+  vars_files:
+    - vars/openstack.yaml
   tasks:
 
     - name: create OSE master root volumes
@@ -60,7 +60,7 @@
         state: present
         flavor: m1.medium
         boot_volume: "{{ namespace }}-{{ item }}-root-vol"
-        key_name: "{{ os_key_name }}"
+        key_name: "{{ openstack_key_name }}"
         security_groups: "{{ master_security_groups }}"
       with_sequence: start=1 end={{ master_count }} format=ose-master-%d
 
@@ -70,7 +70,7 @@
         state: present
         flavor: m1.medium
         boot_volume: "{{ namespace }}-{{ item }}-root-vol"
-        key_name: "{{ os_key_name }}"
+        key_name: "{{ openstack_key_name }}"
         security_groups: "{{ node_security_groups }}"
         volumes:
           - "{{ namespace }}-{{ item }}-docker-vol"
@@ -82,7 +82,7 @@
         state: present
         flavor: m1.medium
         boot_volume: "{{ namespace }}-{{ item }}-root-vol"
-        key_name: "{{ os_key_name }}"
+        key_name: "{{ openstack_key_name }}"
         security_groups: "{{ lb_security_groups }}"
       with_sequence: start=1 end={{ lb_count }} format=ose-lb-%d
 
@@ -92,5 +92,5 @@
         state: present
         flavor: m1.medium
         boot_volume: "{{ namespace }}-ose-dns-root-vol"
-        key_name: "{{ os_key_name }}"
+        key_name: "{{ openstack_key_name }}"
         security_groups: "{{ dns_security_groups }}"

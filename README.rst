@@ -119,8 +119,8 @@ To tell which steps are manual and which are executed:
   be performed manually.
 
 
-OpenStack Environment Setup
----------------------------
+OpenStack Setup
+---------------
 
 Running the examples depend on your environment being set up to authenticate
 with an OpenStack environment. You will need to download your "openrc.sh" file
@@ -136,6 +136,19 @@ Once you've downloaded your RC file, add to your environment:
 .. code-block:: shell
 
     $ source myproject-openrc.sh
+
+You'll also need to configure some Ansible variables to match your
+specific environment. These should be placed in the following file:
+
+    `ansible/vars/openstack.yaml`
+
+There is an example file in that directory named `openstack.yaml.example` which
+you can copy and customize as needed. The following items can be configured:
+
+- `namespace`: A namespace prefix to use when creating instances, volumes, and
+  other objects.
+- `openstack_ssh_key`: The ssh key to assign to instances. This should be the
+  same key used by Ansible.
 
 
 RHN Setup
