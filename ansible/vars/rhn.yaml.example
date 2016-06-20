@@ -1,0 +1,6 @@
+# RHN username
+rh_username: user@example.com
+# RHN password
+rh_password: 5ecret
+# Pool ID to attach to instances
+rh_pool_id: s0m3l0ngh4shc0d3
