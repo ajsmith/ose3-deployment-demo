@@ -1,3 +1,5 @@
 *~
 py/
 _build/
+ansible/vars/openstack.yaml
+ansible/roles/rhn/vars/main.yaml
