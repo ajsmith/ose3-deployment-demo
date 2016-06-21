@@ -66,23 +66,30 @@ base RHEL repositories, and update the system.</p>
     <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">rhn_password</span><span class="nv"> </span><span class="s">}}&quot;</span>
 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">attach subscription</span>
-  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager attach --pool {{ rhn_pool_id }}</span>
-  <span class="l l-Scalar l-Scalar-Plain">ignore_errors</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+    <span class="no">subscription-manager attach --pool {{ rhn_pool_id }}</span>
+    <span class="no">&amp;&amp; touch /root/subscribed-{{ rhn_pool_id }}</span>
+  <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/root/subscribed-{{ rhn_pool_id }}</span>
 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">disable all repos</span>
-  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager repos --disable=*</span>
+  <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+    <span class="no">subscription-manager repos --disable=*</span>
+    <span class="no">&amp;&amp; touch /root/disabled_default_repos</span>
+  <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/root/disabled_default_repos</span>
 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">enable RHEL repo</span>
-  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager repos --enable=rhel-7-server-rpms</span>
+  <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+    <span class="no">subscription-manager repos --enable=rhel-7-server-rpms</span>
+    <span class="no">&amp;&amp; touch /root/enabled_rhel-7-server-rpms</span>
+  <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/root/enabled_rhel-7-server-rpms</span>
 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update RHEL</span>
   <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">name=* state=latest</span>
   <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">reboot</span>
-
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
-  <span class="l l-Scalar l-Scalar-Plain">local_action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait_for host={{ inventory_hostname }} state=started</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 </div>
@@ -107,6 +114,12 @@ a handler for that as well.</p>
   <span class="l l-Scalar l-Scalar-Plain">async</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
   <span class="l l-Scalar l-Scalar-Plain">poll</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
   <span class="l l-Scalar l-Scalar-Plain">ignore_errors</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
+  <span class="l l-Scalar l-Scalar-Plain">local_action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait_for host={{ inventory_hostname }} state=started</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
 </div>
