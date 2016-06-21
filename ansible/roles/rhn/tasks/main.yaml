@@ -15,20 +15,27 @@
     password: "{{ rhn_password }}"
 
 - name: attach subscription
-  command: subscription-manager attach --pool {{ rhn_pool_id }}
-  ignore_errors: true
+  shell: >
+    subscription-manager attach --pool {{ rhn_pool_id }}
+    && touch /root/subscribed-{{ rhn_pool_id }}
+  args:
+    creates: /root/subscribed-{{ rhn_pool_id }}
 
 - name: disable all repos
-  command: subscription-manager repos --disable=*
+  shell: >
+    subscription-manager repos --disable=*
+    && touch /root/disabled_default_repos
+  args:
+    creates: /root/disabled_default_repos
 
 - name: enable RHEL repo
-  command: subscription-manager repos --enable=rhel-7-server-rpms
+  shell: >
+    subscription-manager repos --enable=rhel-7-server-rpms
+    && touch /root/enabled_rhel-7-server-rpms
+  args:
+    creates: /root/enabled_rhel-7-server-rpms
 
 - name: update RHEL
   yum: name=* state=latest
   notify:
     - reboot
-
-- name: wait for host to reboot
-  local_action: wait_for host={{ inventory_hostname }} state=started
-  sudo: false
