@@ -15,7 +15,7 @@ the examples deploy OSE for you, automatically.
 
 Yes, that's right. This is an executable document, and it can build your whole
 OSE3 environment for you! The instructions later in this document will walk you
-through the process, and it's really, really easy :)
+through the process, and it's pretty neat :)
 
 
 Requirements
