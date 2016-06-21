@@ -1,0 +1,5 @@
+- name: reboot
+  shell: sleep 2 && reboot
+  async: 1
+  poll: 0
+  ignore_errors: true
