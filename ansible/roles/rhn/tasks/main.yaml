@@ -16,6 +16,7 @@
 
 - name: attach subscription
   command: subscription-manager attach --pool {{ rhn_pool_id }}
+  ignore_errors: true
 
 - name: disable all repos
   command: subscription-manager repos --disable=*
