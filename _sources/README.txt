@@ -3,8 +3,8 @@ README
 ======
 
 
-About OSE Advanced Enablement Homework
-======================================
+Overview
+========
 
 The purpose of this project is to document and demonstrate an OSE 3.2
 deployment in an HA configuration using an OpenStack cloud provider.
@@ -14,8 +14,8 @@ it, and follow the examples step by step. The *other* way is to run it, and let
 the examples deploy OSE for you, automatically.
 
 Yes, that's right. This is an executable document, and it can build your whole
-OSE3 environment for you! The instructions later in this document will walk you
-through the process, and it's pretty neat :)
+OSE3 environment for you! Pretty cool, huh? There's a little setup involved,
+covered below.
 
 
 Requirements
