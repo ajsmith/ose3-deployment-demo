@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>RHN Subscriptions &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="prev" title="Inventory" href="inventory.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="rhn-subscriptions">
+<h1>RHN Subscriptions<a class="headerlink" href="#rhn-subscriptions" title="Permalink to this headline">¶</a></h1>
+<p>RHN subscriptions are required to update the instances to the latest version of
+RHEL and install OSE3 packages. The <a class="reference internal" href="README.html"><span class="doc">setup instructions in the README</span></a> describe how to configure your RHN credentials for system
+registration, and is required to run the following examples. RHN registration
+is implemented as an Ansible Role, which all hosts utilize.</p>
+<p>The tasks mainly serve to register the system, attach a subscription, set up
+base RHEL repositories, and update the system.</p>
+<div class="literal-block-wrapper container" id="ansible-roles-rhn-tasks-main-yaml">
+<div class="code-block-caption"><span class="caption-text">ansible/roles/rhn/tasks/main.yaml</span><a class="headerlink" href="#ansible-roles-rhn-tasks-main-yaml" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># This ensures that DNS works, since images may be configured to use an</span>
+<span class="c1"># internal DNS service.</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">use public DNS</span>
+  <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="s">&quot;/etc/resolv.conf&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">content</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">|</span>
+      <span class="no">search default</span>
+      <span class="no">nameserver 8.8.8.8</span>
+      <span class="no">nameserver 8.8.4.4</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">register system to RHN</span>
+  <span class="l l-Scalar l-Scalar-Plain">redhat_subscription</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+    <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">rhn_username</span><span class="nv"> </span><span class="s">}}&quot;</span>
+    <span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">rhn_password</span><span class="nv"> </span><span class="s">}}&quot;</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">attach subscription</span>
+  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager attach --pool {{ rhn_pool_id }}</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">disable all repos</span>
+  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager repos --disable=*</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">enable RHEL repo</span>
+  <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">subscription-manager repos --enable=rhel-7-server-rpms</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update RHEL</span>
+  <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">name=* state=latest</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">reboot</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
+  <span class="l l-Scalar l-Scalar-Plain">local_action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait_for host={{ inventory_hostname }} state=started</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+<p>The following variables need to be configured in order to register systems.</p>
+<div class="literal-block-wrapper container" id="ansible-roles-rhn-vars-main-yaml-example">
+<div class="code-block-caption"><span class="caption-text">ansible/roles/rhn/vars/main.yaml.example</span><a class="headerlink" href="#ansible-roles-rhn-vars-main-yaml-example" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># RHN username</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">user@example.com</span>
+<span class="c1"># RHN password</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5ecret</span>
+<span class="c1"># Pool ID to attach to instances</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_pool_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">s0m3l0ngh4shc0d3</span>
+</pre></div>
+</div>
+</div>
+<p>If a system receives updates, it may need to be rebooted. The RHN role provides
+a handler for that as well.</p>
+<div class="literal-block-wrapper container" id="ansible-roles-rhn-handlers-main-yaml">
+<div class="code-block-caption"><span class="caption-text">ansible/roles/rhn/handlers/main.yaml</span><a class="headerlink" href="#ansible-roles-rhn-handlers-main-yaml" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">reboot</span>
+  <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">sleep 2 &amp;&amp; reboot</span>
+  <span class="l l-Scalar l-Scalar-Plain">async</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+  <span class="l l-Scalar l-Scalar-Plain">poll</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
+  <span class="l l-Scalar l-Scalar-Plain">ignore_errors</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="inventory.html" title="previous chapter">Inventory</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/rhn.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Alex Smith.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/rhn.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

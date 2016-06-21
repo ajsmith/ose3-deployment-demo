@@ -15,7 +15,7 @@ the examples deploy OSE for you, automatically.
 
 Yes, that's right. This is an executable document, and it can build your whole
 OSE3 environment for you! The instructions later in this document will walk you
-through the process, and it's really, really easy :)
+through the process, and it's pretty neat :)
 
 
 Requirements
@@ -167,11 +167,11 @@ RHN Setup
 
 RHN registration information needs to be configured in order to update RHEL and
 install OSE packages. A username, password, and a pool ID must be
-provided. These settings are configured in 'ansible/vars/rhn.yaml'. An example
-file lives in the same directory (named 'rhn.yaml.example') which you can copy
-and customize.
+provided. These settings are configured in
+'ansible/roles/rhn/vars/main.yaml'. An example file lives in the same directory
+(named 'main.yaml.example') which you can copy and customize.
 
-.. literalinclude:: ansible/vars/rhn.yaml.example
+.. literalinclude:: ansible/roles/rhn/vars/main.yaml.example
    :caption:
    :language: yaml
 

@@ -51,7 +51,7 @@ it, and follow the examples step by step. The <em>other</em> way is to run it, a
 the examples deploy OSE for you, automatically.</p>
 <p>Yes, that&#8217;s right. This is an executable document, and it can build your whole
 OSE3 environment for you! The instructions later in this document will walk you
-through the process, and it&#8217;s really, really easy :)</p>
+through the process, and it&#8217;s pretty neat :)</p>
 </div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
@@ -170,17 +170,17 @@ you can copy and customize.</p>
 <h3>RHN Setup<a class="headerlink" href="#rhn-setup" title="Permalink to this headline">¶</a></h3>
 <p>RHN registration information needs to be configured in order to update RHEL and
 install OSE packages. A username, password, and a pool ID must be
-provided. These settings are configured in &#8216;ansible/vars/rhn.yaml&#8217;. An example
-file lives in the same directory (named &#8216;rhn.yaml.example&#8217;) which you can copy
-and customize.</p>
-<div class="literal-block-wrapper container" id="ansible-vars-rhn-yaml-example">
-<div class="code-block-caption"><span class="caption-text">ansible/vars/rhn.yaml.example</span><a class="headerlink" href="#ansible-vars-rhn-yaml-example" title="Permalink to this code">¶</a></div>
+provided. These settings are configured in
+&#8216;ansible/roles/rhn/vars/main.yaml&#8217;. An example file lives in the same directory
+(named &#8216;main.yaml.example&#8217;) which you can copy and customize.</p>
+<div class="literal-block-wrapper container" id="ansible-roles-rhn-vars-main-yaml-example">
+<div class="code-block-caption"><span class="caption-text">ansible/roles/rhn/vars/main.yaml.example</span><a class="headerlink" href="#ansible-roles-rhn-vars-main-yaml-example" title="Permalink to this code">¶</a></div>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># RHN username</span>
-<span class="l l-Scalar l-Scalar-Plain">rh_username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">user@example.com</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_username</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">user@example.com</span>
 <span class="c1"># RHN password</span>
-<span class="l l-Scalar l-Scalar-Plain">rh_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5ecret</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5ecret</span>
 <span class="c1"># Pool ID to attach to instances</span>
-<span class="l l-Scalar l-Scalar-Plain">rh_pool_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">s0m3l0ngh4shc0d3</span>
+<span class="l l-Scalar l-Scalar-Plain">rhn_pool_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">s0m3l0ngh4shc0d3</span>
 </pre></div>
 </div>
 </div>
