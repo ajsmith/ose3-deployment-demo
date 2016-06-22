@@ -48,19 +48,19 @@ Then write out the inventory file.
     ... masters
     ... nodes
     ... [masters]
-    ... {demo-ose-master-1}
-    ... {demo-ose-master-2}
-    ... {demo-ose-master-3}
+    ... demo-ose-master-1 ansible_host={demo-ose-master-1}
+    ... demo-ose-master-2 ansible_host={demo-ose-master-2}
+    ... demo-ose-master-3 ansible_host={demo-ose-master-3}
     ... [nodes]
-    ... {demo-ose-node-1}
-    ... {demo-ose-node-2}
-    ... {demo-ose-node-3}
-    ... {demo-ose-node-4}
+    ... demo-ose-node-1 ansible_host={demo-ose-node-1}
+    ... demo-ose-node-2 ansible_host={demo-ose-node-2}
+    ... demo-ose-node-3 ansible_host={demo-ose-node-3}
+    ... demo-ose-node-4 ansible_host={demo-ose-node-4}
     ... [lbs]
-    ... {demo-ose-lb-1}
-    ... {demo-ose-lb-2}
+    ... demo-ose-lb-1 ansible_host={demo-ose-lb-1}
+    ... demo-ose-lb-2 ansible_host={demo-ose-lb-2}
     ... [dns]
-    ... {demo-ose-dns}
+    ... demo-ose-dns ansible_host={demo-ose-dns}
     ... """.format(**address_map))
     >>> inventory_file.close()
 
@@ -77,21 +77,15 @@ Finally, let's check that it works by calling Ansible to check our hosts.
 
 To check, let's simply tell all of our hosts to report their hostname.
 
-.. testcode::
-
-    run_ansible('-i hosts.cfg -f 1 -o -m command -a "hostname -s" all')
-
-And we should see something similar to the following.
-
-.. testoutput::
-
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-master-1
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-master-2
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-master-3
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-node-1
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-node-2
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-node-3
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-node-4
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-lb-1
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-lb-2
-    ... | SUCCESS | rc=0 | (stdout) demo-ose-dns
+    >>> run_ansible('-i hosts.cfg -f 1 -o -m command -a "hostname -s" all')
+    demo-ose-master-1 | SUCCESS | rc=0 | (stdout) demo-ose-master-1
+    demo-ose-master-2 | SUCCESS | rc=0 | (stdout) demo-ose-master-2
+    demo-ose-master-3 | SUCCESS | rc=0 | (stdout) demo-ose-master-3
+    demo-ose-node-1 | SUCCESS | rc=0 | (stdout) demo-ose-node-1
+    demo-ose-node-2 | SUCCESS | rc=0 | (stdout) demo-ose-node-2
+    demo-ose-node-3 | SUCCESS | rc=0 | (stdout) demo-ose-node-3
+    demo-ose-node-4 | SUCCESS | rc=0 | (stdout) demo-ose-node-4
+    demo-ose-lb-1 | SUCCESS | rc=0 | (stdout) demo-ose-lb-1
+    demo-ose-lb-2 | SUCCESS | rc=0 | (stdout) demo-ose-lb-2
+    demo-ose-dns | SUCCESS | rc=0 | (stdout) demo-ose-dns
+    0
