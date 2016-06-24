@@ -37,3 +37,6 @@
     group: named
     mode: 0644
   notify: restart named
+
+- name: start and enable named service
+  service: name=named enabled=yes state=started
