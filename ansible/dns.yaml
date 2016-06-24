@@ -6,3 +6,4 @@
   name: setup DNS server
   roles:
     - dns-server
+    - net-common
