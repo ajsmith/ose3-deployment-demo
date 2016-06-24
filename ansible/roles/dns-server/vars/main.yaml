@@ -1,0 +1,5 @@
+bind_packages:
+  - bind
+  - bind-utils
+octets: "{{ ansible_default_ipv4.network.split('.') }}"
+reverse_zone: "{{ octets[2] }}.{{ octets[1] }}.{{ octets[0] }}.in-addr.arpa"

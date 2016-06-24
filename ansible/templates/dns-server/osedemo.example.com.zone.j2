@@ -1,0 +1,13 @@
+@ IN SOA {{ ansible_hostname }}.osedemo.example.com. root.osedemo.example.com. (
+  1      ; serial
+  21600  ; refresh after 6 hours
+  3600   ; retry after 1 hour
+  86400  ; expire after 1 day
+  3600   ; minimum TTL of 1 hour
+)
+
+  IN NS {{ ansible_hostname }}.osedemo.example.com.
+
+{% for host in groups['hosts'] %}
+{{ host }} IN A {{ hostvars[host]['ansible_host'] }}
+{% endfor %}

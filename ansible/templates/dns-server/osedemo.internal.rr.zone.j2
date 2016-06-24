@@ -1,0 +1,13 @@
+@ IN SOA {{ ansible_hostname }}.osedemo.internal. root.osedemo.internal. (
+  1      ; serial
+  21600  ; refresh after 6 hours
+  3600   ; retry after 1 hour
+  86400  ; expire after 1 day
+  3600   ; minimum TTL of 1 hour
+)
+
+@ IN NS {{ ansible_hostname }}.osedemo.internal.
+
+{% for host in groups['hosts'] %}
+{{ hostvars[host]['ansible_eth0']['ipv4']['address'].split('.')[-1] }} IN PTR {{ host }}.osedemo.internal.
+{% endfor %}

@@ -1,0 +1,2 @@
+- name: install BIND packages
+  yum: name={{ bind_packages }} state=latest
