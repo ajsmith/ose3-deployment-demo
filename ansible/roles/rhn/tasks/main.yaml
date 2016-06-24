@@ -39,3 +39,4 @@
   yum: name=* state=latest
   notify:
     - reboot
+    - wait for host to reboot
