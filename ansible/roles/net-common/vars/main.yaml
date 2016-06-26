@@ -1,0 +1,1 @@
+nameserver: "{{ hostvars['demo-ose-dns']['ansible_eth0']['ipv4']['address'] }}"
