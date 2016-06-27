@@ -16,6 +16,7 @@ options {
   statistics-file "/var/named/data/named_stats.txt";
   memstatistics-file "/var/named/data/named_mem_stats.txt";
   allow-query     { any; };
+  allow-query-cache { localhost; localnets; };
 
   /*
    - If you are building an AUTHORITATIVE DNS server, do NOT enable recursion.
@@ -27,7 +28,7 @@ options {
      attacks. Implementing BCP38 within your network would greatly
      reduce such attack surface
   */
-  recursion yes;
+  recursion no;
 
   dnssec-enable yes;
   dnssec-validation yes;
