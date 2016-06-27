@@ -9,14 +9,6 @@
     - restart network
     - restart NetworkManager
 
-- name: configure resolv.conf
-  template:
-    src: resolv.conf
-    dest: /etc/resolv.conf
-    owner: root
-    group: root
-    mode: 0644
-
 - name: configure hostname
   copy:
     content: "{{ ansible_hostname }}.osedemo.internal"
@@ -27,3 +19,11 @@
   notify:
     - restart network
     - restart NetworkManager
+
+- name: configure resolv.conf
+  template:
+    src: resolv.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
