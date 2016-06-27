@@ -104,6 +104,9 @@ Now let's run it.
     TASK [setup] *******************************************************************
     ...: [localhost]
     <BLANKLINE>
+    TASK [create OSE installer root volume] ****************************************
+    ...: [localhost]
+    <BLANKLINE>
     TASK [create OSE master root volumes] ******************************************
     ...: [localhost] => (item=ose-master-1-root-vol)
     ...: [localhost] => (item=ose-master-2-root-vol)
@@ -127,6 +130,9 @@ Now let's run it.
     ...: [localhost] => (item=ose-node-2-docker-vol)
     ...: [localhost] => (item=ose-node-3-docker-vol)
     ...: [localhost] => (item=ose-node-4-docker-vol)
+    <BLANKLINE>
+    TASK [create OSE installer instance] *******************************************
+    ...: [localhost]
     <BLANKLINE>
     TASK [create OSE master instances] *********************************************
     ...: [localhost] => (item=ose-master-1)

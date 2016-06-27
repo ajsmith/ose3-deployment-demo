@@ -12,6 +12,7 @@ First, let's create an OpenStack client instance.
 Then build a list of our instance names to filter by.
 
     >>> server_names = """\
+    ... demo-ose-installer
     ... demo-ose-master-1
     ... demo-ose-master-2
     ... demo-ose-master-3
@@ -38,6 +39,7 @@ Then write out the inventory file.
     >>> inventory_file = open('hosts.cfg', 'w')
     >>> inventory_file.write("""\
     ... [hosts:children]
+    ... installer
     ... masters
     ... nodes
     ... lbs
@@ -47,6 +49,8 @@ Then write out the inventory file.
     ... [OSEv3:children]
     ... masters
     ... nodes
+    ... [installer]
+    ... demo-ose-installer ansible_host={demo-ose-installer}
     ... [masters]
     ... demo-ose-master-1 ansible_host={demo-ose-master-1}
     ... demo-ose-master-2 ansible_host={demo-ose-master-2}
@@ -78,6 +82,7 @@ Finally, let's check that it works by calling Ansible to check our hosts.
 To check, let's simply tell all of our hosts to report their hostname.
 
     >>> run_ansible('-i hosts.cfg -f 1 -o -m command -a "hostname -s" all')
+    demo-ose-installer | SUCCESS | rc=0 | (stdout) demo-ose-installer
     demo-ose-master-1 | SUCCESS | rc=0 | (stdout) demo-ose-master-1
     demo-ose-master-2 | SUCCESS | rc=0 | (stdout) demo-ose-master-2
     demo-ose-master-3 | SUCCESS | rc=0 | (stdout) demo-ose-master-3

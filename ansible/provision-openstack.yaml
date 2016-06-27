@@ -5,6 +5,8 @@
     node_count: 4
     lb_count: 2
     namespace: demo
+    installer_security_groups:
+      - default
     master_security_groups:
       - default
     node_security_groups:
@@ -16,6 +18,13 @@
   vars_files:
     - vars/openstack.yaml
   tasks:
+
+    - name: create OSE installer root volume
+      os_volume:
+        state: present
+        size: 20
+        image: RHEL7
+        display_name: "{{ namespace }}-ose-installer-root-vol"
 
     - name: create OSE master root volumes
       os_volume:
@@ -54,6 +63,15 @@
         size: 15
         display_name: "{{ namespace }}-{{ item }}"
       with_sequence: start=1 end={{ node_count }} format=ose-node-%d-docker-vol
+
+    - name: create OSE installer instance
+      os_server:
+        name: "{{ namespace }}-ose-installer"
+        state: present
+        flavor: m1.medium
+        boot_volume: "{{ namespace }}-ose-installer-root-vol"
+        key_name: "{{ openstack_key_name }}"
+        security_groups: "{{ installer_security_groups }}"
 
     - name: create OSE master instances
       os_server:

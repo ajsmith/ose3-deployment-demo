@@ -4,16 +4,19 @@ Architecture Overview
 
 The HA deployment of OSE 3.2 will consist of the following hosts:
 
-- 3 x Master Nodes
-- 4 x Compute Nodes (2 Infra, 2 App)
+- 1 x Installer
+- 3 x Masters
+- 4 x Nodes (2 Infra, 2 App)
 - 2 x Load Balancers
 - 1 x DNS
 
-Below are the hardware specs for each node type:
+Below are the hardware specs for each host type:
 
 +-----------+------+----------+-------------+-------------+
 | Node Type | CPUs | RAM (GB) | Disk 1 (GB) | Disk 2 (GB) |
 +===========+======+==========+=============+=============+
+| Installer | 2    | 4        | 20          | None        |
++-----------+------+----------+-------------+-------------+
 | Master    | 2    | 4        | 40          | None        |
 +-----------+------+----------+-------------+-------------+
 | Compute   | 2    | 4        | 25          | 15          |
