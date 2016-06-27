@@ -1,0 +1,9 @@
+base_packages:
+  - atomic-openshift-utils
+  - bash-completion
+  - bind-utils
+  - bridge-utils
+  - git
+  - iptables-services
+  - net-tools
+  - wget

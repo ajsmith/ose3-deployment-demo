@@ -1,0 +1,28 @@
+- name: install docker
+  yum: name=docker state=latest
+  notify:
+    - restart docker
+
+- name: configure docker storage backend
+  copy:
+    src: docker-storage-setup
+    dest: /etc/sysconfig/docker-storage-setup
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - run docker-storage-setup
+    - restart docker
+
+- name: configure docker
+  copy:
+    src: docker
+    dest: /etc/sysconfig/docker
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart docker
+
+- name: enable docker
+  service: name=docker state=started enabled=yes

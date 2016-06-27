@@ -1,0 +1,3 @@
+DEVS="/dev/vdb"
+AUTO_EXTEND_POOL=true
+VG=vg_docker

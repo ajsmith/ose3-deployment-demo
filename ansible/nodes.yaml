@@ -1,0 +1,8 @@
+- name: gather facts about other hosts
+  hosts: all
+  tasks: []
+
+- name: configure OSE nodes
+  hosts: nodes
+  roles:
+    - ose-node

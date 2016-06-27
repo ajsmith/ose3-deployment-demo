@@ -1,0 +1,11 @@
+- name: enable OSE3.2 repos
+  shell: >
+    subscription-manager repos
+    --enable=rhel-7-server-extras-rpms
+    --enable=rhel-7-server-ose-3.2-rpms
+    && touch /root/enabled_ose3.2_repos
+  args:
+    creates: /root/enabled_ose3.2_repos
+
+- name: install base packages
+  yum: name={{ base_packages }} state=latest
