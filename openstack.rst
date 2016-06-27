@@ -75,6 +75,34 @@ All instances use the "m1.medium" flavor, which has 2 CPUs and 4GB RAM.
     0
 
 
+Security Groups
+---------------
+
+The "default" security group allows SSH and ICMP (ping).
+
+    >>> openstackclient.shell.main(shlex.split('security group show default'))
+    +-------------+--------------------------------------------------------------------------+
+    | Field       | Value                                                                    |
+    +-------------+--------------------------------------------------------------------------+
+    ...
+    | name        | default                                                                  |
+    ...
+    +-------------+--------------------------------------------------------------------------+
+    0
+
+The "dns" security group allows DNS server traffic.
+
+    >>> openstackclient.shell.main(shlex.split('security group show dns'))
+    +-------------+-------------------------------------------------------------------------+
+    | Field       | Value                                                                   |
+    +-------------+-------------------------------------------------------------------------+
+    ...
+    | name        | dns                                                                     |
+    ...
+    +-------------+-------------------------------------------------------------------------+
+    0
+
+
 Provisioning
 ============
 
