@@ -57,6 +57,13 @@
         image: RHEL7
         display_name: "{{ namespace }}-ose-dns-root-vol"
 
+    - name: create Docker storage volumes for OSE masters
+      os_volume:
+        state: present
+        size: 15
+        display_name: "{{ namespace }}-{{ item }}"
+      with_sequence: start=1 end={{ master_count }} format=master-%d-docker-vol
+
     - name: create Docker storage volumes for OSE nodes
       os_volume:
         state: present
@@ -81,6 +88,8 @@
         boot_volume: "{{ namespace }}-{{ item }}-root-vol"
         key_name: "{{ openstack_key_name }}"
         security_groups: "{{ master_security_groups }}"
+        volumes:
+          - "{{ namespace }}-{{ item }}-docker-vol"
       with_sequence: start=1 end={{ master_count }} format=ose-master-%d
 
     - name: create OSE node instances

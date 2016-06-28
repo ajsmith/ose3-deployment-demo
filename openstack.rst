@@ -153,6 +153,12 @@ Now let's run it.
     TASK [create DNS root volume] **************************************************
     ...: [localhost]
     <BLANKLINE>
+    TASK [create Docker storage volumes for OSE masters] ***************************
+    ...: [localhost] => (item=master-1-docker-vol)
+    ...: [localhost] => (item=master-2-docker-vol)
+    ...: [localhost] => (item=master-3-docker-vol)
+    ...: [localhost] => (item=master-4-docker-vol)
+    <BLANKLINE>
     TASK [create Docker storage volumes for OSE nodes] *****************************
     ...: [localhost] => (item=ose-node-1-docker-vol)
     ...: [localhost] => (item=ose-node-2-docker-vol)
