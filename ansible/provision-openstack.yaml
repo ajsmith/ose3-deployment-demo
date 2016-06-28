@@ -15,7 +15,6 @@
       - default
     dns_security_groups:
       - default
-      - dns
   vars_files:
     - vars/openstack.yaml
   tasks:
