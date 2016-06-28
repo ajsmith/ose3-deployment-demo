@@ -1,29 +1,42 @@
 - name: gather facts about hosts
   hosts: all
   tasks: []
+  tags:
+    - facts
+    - always
 
 - name: setup DNS server
   hosts: dns
   roles:
     - dns-server
     - net-common
+  tags:
+    - dns
 
 - name: setup OSE nodes
   hosts: nodes
   roles:
     - ose-node
+  tags:
+    - node
 
 - name: setup OSE masters
   hosts: masters
   roles:
     - ose-master
+  tags:
+    - master
 
 - name: setup load balancers
   hosts: lbs
   roles:
+    - lb
+  tags:
     - lb
 
 - name: setup OSE installer
   hosts: installer
   roles:
     - ose-installer
+  tags:
+    - installer
