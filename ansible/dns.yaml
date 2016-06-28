@@ -1,9 +1,0 @@
-- hosts: all
-  name: gather facts about other hosts
-  tasks: []
-
-- hosts: dns
-  name: setup DNS server
-  roles:
-    - dns-server
-    - net-common

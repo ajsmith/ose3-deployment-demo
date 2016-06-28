@@ -1,0 +1,14 @@
+- name: gather facts about hosts
+  hosts: all
+  tasks: []
+
+- name: setup DNS server
+  hosts: dns
+  roles:
+    - dns-server
+    - net-common
+
+- name: setup OSE nodes
+  hosts: nodes
+  roles:
+    - ose-node
