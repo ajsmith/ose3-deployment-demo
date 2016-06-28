@@ -22,3 +22,8 @@
   hosts: lbs
   roles:
     - lb
+
+- name: setup OSE installer
+  hosts: installer
+  roles:
+    - ose-installer
