@@ -12,3 +12,8 @@
   hosts: nodes
   roles:
     - ose-node
+
+- name: setup OSE masters
+  hosts: masters
+  roles:
+    - ose-master
