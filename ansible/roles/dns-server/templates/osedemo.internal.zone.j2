@@ -11,3 +11,4 @@
 {% for host in groups['hosts'] %}
 {{ host }} IN A {{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}
 {% endfor %}
+cluster IN A {{ hostvars['demo-ose-lb-1']['ansible_eth0']['ipv4']['address'] }}

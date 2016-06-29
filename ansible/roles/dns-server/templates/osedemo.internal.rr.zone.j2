@@ -11,3 +11,4 @@
 {% for host in groups['hosts'] %}
 {{ hostvars[host]['ansible_eth0']['ipv4']['address'].split('.')[-1] }} IN PTR {{ host }}.osedemo.internal.
 {% endfor %}
+{{ hostvars['demo-ose-lb-1']['ansible_eth0']['ipv4']['address'].split('.')[-1] }} IN PTR cluster.osedemo.internal.
