@@ -1,0 +1,17 @@
+- name: configure ssh options
+  copy:
+    content: |
+      ForwardAgent yes
+      StrictHostKeyChecking no
+    dest: /home/cloud-user/.ssh/config
+    owner: cloud-user
+    group: cloud-user
+    mode: 0600
+
+- name: add inventory file
+  template:
+    src: hosts.j2
+    dest: /etc/ansible/hosts
+    owner: root
+    group: root
+    mode: 0644
