@@ -1,13 +1,3 @@
-# This ensures that DNS works, since images may be configured to use an
-# internal DNS service.
-- name: use public DNS
-  copy:
-    dest: "/etc/resolv.conf"
-    content: |
-      search default
-      nameserver 8.8.8.8
-      nameserver 8.8.4.4
-
 - name: register system to RHN
   redhat_subscription:
     state: present

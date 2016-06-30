@@ -20,10 +20,13 @@
     - restart network
     - restart NetworkManager
 
-- name: configure resolv.conf
+- name: configure dhclient
   template:
-    src: resolv.conf
-    dest: /etc/resolv.conf
+    src: dhclient.conf.j2
+    dest: /etc/dhcp/dhclient.conf
     owner: root
     group: root
     mode: 0644
+  notify:
+    - restart network
+    - restart NetworkManager
