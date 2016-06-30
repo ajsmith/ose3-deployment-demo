@@ -1,7 +1,22 @@
 - name: deploy OSE
   hosts: installer
+  tags:
+    - install
   tasks:
 
     - name: run deployment playbook
       command: ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml
       become: false
+
+- name: configure OSE components
+  hosts: demo-ose-master-1
+  tasks:
+
+    - name: deploy internal registry
+      tags:
+        - registry
+      command: >
+        oadm registry --config=/etc/origin/master/admin.kubeconfig
+        --credentials=/etc/origin/master/openshift-registry.kubeconfig
+        --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
+
