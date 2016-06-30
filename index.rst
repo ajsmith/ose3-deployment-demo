@@ -17,3 +17,5 @@ Contents:
    openstack
    inventory
    rhn
+   host-setup
+   installation
