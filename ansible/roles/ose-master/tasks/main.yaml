@@ -1,0 +1,7 @@
+- name: add htpasswd file
+  copy:
+    src: htpasswd
+    dest: /etc/origin/master/htpasswd
+    owner: root
+    group: root
+    mode: 0600
