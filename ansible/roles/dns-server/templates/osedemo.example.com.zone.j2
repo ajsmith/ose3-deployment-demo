@@ -12,3 +12,5 @@
 {{ host }} IN A {{ hostvars[host]['ansible_host'] }}
 {% endfor %}
 cluster IN A {{ hostvars['demo-ose-lb-1']['ansible_host'] }}
+*.apps 60 IN A {{ hostvars['demo-ose-node-1']['ansible_host'] }}
+          IN A {{ hostvars['demo-ose-node-2']['ansible_host'] }}
