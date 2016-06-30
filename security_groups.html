@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Architecture Overview &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
+    <title>Security Groups &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,6 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
-    <link rel="next" title="Deployment on OpenStack" href="openstack.html" />
-    <link rel="prev" title="README" href="README.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,66 +38,62 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="architecture-overview">
-<h1>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline">¶</a></h1>
-<p>The HA deployment of OSE 3.2 will consist of the following hosts:</p>
-<ul class="simple">
-<li>1 x Installer</li>
-<li>3 x Masters</li>
-<li>4 x Nodes (2 Infra, 2 App)</li>
-<li>2 x Load Balancers</li>
-<li>1 x DNS</li>
-</ul>
-<p>Below are the hardware specs for each host type:</p>
+  <div class="section" id="security-groups">
+<h1>Security Groups<a class="headerlink" href="#security-groups" title="Permalink to this headline">¶</a></h1>
+<p>The environment needs to allow access to the following ports in their security
+group configuration.</p>
+<div class="section" id="security-group-default">
+<h2>Security Group: default<a class="headerlink" href="#security-group-default" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="21%" />
-<col width="11%" />
-<col width="19%" />
 <col width="25%" />
-<col width="25%" />
+<col width="29%" />
+<col width="46%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">Node Type</th>
-<th class="head">CPUs</th>
-<th class="head">RAM (GB)</th>
-<th class="head">Disk 1 (GB)</th>
-<th class="head">Disk 2 (GB)</th>
+<tr class="row-odd"><th class="head">Port</th>
+<th class="head">Proto</th>
+<th class="head">Allowed</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>Installer</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td>Master</td>
-<td>2</td>
-<td>4</td>
-<td>40</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td>Compute</td>
-<td>2</td>
-<td>4</td>
-<td>25</td>
-<td>15</td>
-</tr>
-<tr class="row-odd"><td>LB</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td>DNS</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
+<tr class="row-even"><td>22</td>
+<td>tcp</td>
+<td>0.0.0.0/0</td>
 </tr>
 </tbody>
 </table>
+<div class="line-block">
+<div class="line">Security Group | Port | Proto | Rule                        | Hosts |</div>
+<div class="line">default        | 22   | tcp   | ingress/egress from 0.0.0.0 | All   |</div>
+<div class="line">web            |</div>
+</div>
+<p>All OpenShift Hosts - tcp/22 from host running the installer/Ansible</p>
+<p>etcd Security Group</p>
+<blockquote>
+<div><p>tcp/2379 from masters</p>
+<p>tcp/2380 from etcd hosts</p>
+</div></blockquote>
+<p>Master Security Group</p>
+<blockquote>
+<div><p>tcp/8443 from 0.0.0.0/0</p>
+<p>tcp/53 from all OpenShift hosts for environments installed prior to or upgraded to 3.2</p>
+<p>udp/53 from all OpenShift hosts for environments installed prior to or upgraded to 3.2</p>
+<p>tcp/8053 from all OpenShift hosts for new environments installed with 3.2</p>
+<p>udp/8053 from all OpenShift hosts for new environments installed with 3.2</p>
+</div></blockquote>
+<p>Node Security Group</p>
+<blockquote>
+<div><p>tcp/10250 from masters</p>
+<p>tcp/4789 from nodes</p>
+</div></blockquote>
+<p>Infrastructure Nodes (ones that can host the OpenShift router)</p>
+<blockquote>
+<div><p>tcp/443 from 0.0.0.0/0</p>
+<p>tcp/80 from 0.0.0.0/0</p>
+</div></blockquote>
+<p><a class="reference external" href="https://docs.openshift.com/enterprise/3.2/install_config/install/prerequisites.html#prereq-cloud-provider-considerations">https://docs.openshift.com/enterprise/3.2/install_config/install/prerequisites.html#prereq-cloud-provider-considerations</a></p>
+</div>
 </div>
 
 
@@ -107,19 +101,25 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Security Groups</a><ul>
+<li><a class="reference internal" href="#security-group-default">Security Group: default</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="README.html" title="previous chapter">README</a></li>
-      <li>Next: <a href="openstack.html" title="next chapter">Deployment on OpenStack</a></li>
   </ul></li>
 </ul>
 </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/architecture.txt"
+      <li><a href="_sources/security_groups.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -145,7 +145,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
-      <a href="_sources/architecture.txt"
+      <a href="_sources/security_groups.txt"
           rel="nofollow">Page source</a>
     </div>
 

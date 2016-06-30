@@ -75,6 +75,34 @@ All instances use the "m1.medium" flavor, which has 2 CPUs and 4GB RAM.
     0
 
 
+Security Groups
+---------------
+
+The "default" security group allows SSH and ICMP (ping).
+
+    >>> openstackclient.shell.main(shlex.split('security group show default'))
+    +-------------+--------------------------------------------------------------------------+
+    | Field       | Value                                                                    |
+    +-------------+--------------------------------------------------------------------------+
+    ...
+    | name        | default                                                                  |
+    ...
+    +-------------+--------------------------------------------------------------------------+
+    0
+
+The "dns" security group allows DNS server traffic.
+
+    >>> openstackclient.shell.main(shlex.split('security group show dns'))
+    +-------------+-------------------------------------------------------------------------+
+    | Field       | Value                                                                   |
+    +-------------+-------------------------------------------------------------------------+
+    ...
+    | name        | dns                                                                     |
+    ...
+    +-------------+-------------------------------------------------------------------------+
+    0
+
+
 Provisioning
 ============
 
@@ -104,6 +132,9 @@ Now let's run it.
     TASK [setup] *******************************************************************
     ...: [localhost]
     <BLANKLINE>
+    TASK [create OSE installer root volume] ****************************************
+    ...: [localhost]
+    <BLANKLINE>
     TASK [create OSE master root volumes] ******************************************
     ...: [localhost] => (item=ose-master-1-root-vol)
     ...: [localhost] => (item=ose-master-2-root-vol)
@@ -122,11 +153,19 @@ Now let's run it.
     TASK [create DNS root volume] **************************************************
     ...: [localhost]
     <BLANKLINE>
+    TASK [create Docker storage volumes for OSE masters] ***************************
+    ...: [localhost] => (item=master-1-docker-vol)
+    ...: [localhost] => (item=master-2-docker-vol)
+    ...: [localhost] => (item=master-3-docker-vol)
+    <BLANKLINE>
     TASK [create Docker storage volumes for OSE nodes] *****************************
     ...: [localhost] => (item=ose-node-1-docker-vol)
     ...: [localhost] => (item=ose-node-2-docker-vol)
     ...: [localhost] => (item=ose-node-3-docker-vol)
     ...: [localhost] => (item=ose-node-4-docker-vol)
+    <BLANKLINE>
+    TASK [create OSE installer instance] *******************************************
+    ...: [localhost]
     <BLANKLINE>
     TASK [create OSE master instances] *********************************************
     ...: [localhost] => (item=ose-master-1)

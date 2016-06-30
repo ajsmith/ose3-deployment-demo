@@ -24,6 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="next" title="DNS Configuration" href="dns.html" />
     <link rel="prev" title="Inventory" href="inventory.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -90,6 +91,7 @@ base RHEL repositories, and update the system.</p>
   <span class="l l-Scalar l-Scalar-Plain">yum</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">name=* state=latest</span>
   <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">reboot</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
 </pre></div>
 </div>
 </div>
@@ -114,8 +116,6 @@ a handler for that as well.</p>
   <span class="l l-Scalar l-Scalar-Plain">async</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
   <span class="l l-Scalar l-Scalar-Plain">poll</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
   <span class="l l-Scalar l-Scalar-Plain">ignore_errors</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait for host to reboot</span>
   <span class="l l-Scalar l-Scalar-Plain">local_action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">wait_for host={{ inventory_hostname }} state=started</span>
@@ -135,6 +135,7 @@ a handler for that as well.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="inventory.html" title="previous chapter">Inventory</a></li>
+      <li>Next: <a href="dns.html" title="next chapter">DNS Configuration</a></li>
   </ul></li>
 </ul>
 </div>

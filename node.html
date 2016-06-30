@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Architecture Overview &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
+    <title>Node Setup &mdash; OSE3 Advanced Enablement Homework 1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,6 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
-    <link rel="next" title="Deployment on OpenStack" href="openstack.html" />
-    <link rel="prev" title="README" href="README.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,66 +38,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="architecture-overview">
-<h1>Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permalink to this headline">¶</a></h1>
-<p>The HA deployment of OSE 3.2 will consist of the following hosts:</p>
-<ul class="simple">
-<li>1 x Installer</li>
-<li>3 x Masters</li>
-<li>4 x Nodes (2 Infra, 2 App)</li>
-<li>2 x Load Balancers</li>
-<li>1 x DNS</li>
-</ul>
-<p>Below are the hardware specs for each host type:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="21%" />
-<col width="11%" />
-<col width="19%" />
-<col width="25%" />
-<col width="25%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Node Type</th>
-<th class="head">CPUs</th>
-<th class="head">RAM (GB)</th>
-<th class="head">Disk 1 (GB)</th>
-<th class="head">Disk 2 (GB)</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>Installer</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
-</tr>
-<tr class="row-odd"><td>Master</td>
-<td>2</td>
-<td>4</td>
-<td>40</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td>Compute</td>
-<td>2</td>
-<td>4</td>
-<td>25</td>
-<td>15</td>
-</tr>
-<tr class="row-odd"><td>LB</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
-</tr>
-<tr class="row-even"><td>DNS</td>
-<td>2</td>
-<td>4</td>
-<td>20</td>
-<td>None</td>
-</tr>
-</tbody>
-</table>
+  <div class="section" id="node-setup">
+<h1>Node Setup<a class="headerlink" href="#node-setup" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<p>Nodes need Docker installed.</p>
+</div>
 </div>
 
 
@@ -107,19 +51,25 @@
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Node Setup</a><ul>
+<li><a class="reference internal" href="#docker">Docker</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="README.html" title="previous chapter">README</a></li>
-      <li>Next: <a href="openstack.html" title="next chapter">Deployment on OpenStack</a></li>
   </ul></li>
 </ul>
 </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/architecture.txt"
+      <li><a href="_sources/node.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -145,7 +95,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
       
       |
-      <a href="_sources/architecture.txt"
+      <a href="_sources/node.txt"
           rel="nofollow">Page source</a>
     </div>
 

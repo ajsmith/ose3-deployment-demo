@@ -99,6 +99,33 @@ in these examples.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="security-groups">
+<h3>Security Groups<a class="headerlink" href="#security-groups" title="Permalink to this headline">¶</a></h3>
+<p>The &#8220;default&#8221; security group allows SSH and ICMP (ping).</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">openstackclient</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;security group show default&#39;</span><span class="p">))</span>
+<span class="go">+-------------+--------------------------------------------------------------------------+</span>
+<span class="go">| Field       | Value                                                                    |</span>
+<span class="go">+-------------+--------------------------------------------------------------------------+</span>
+<span class="gp">...</span>
+<span class="go">| name        | default                                                                  |</span>
+<span class="gp">...</span>
+<span class="go">+-------------+--------------------------------------------------------------------------+</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+<p>The &#8220;dns&#8221; security group allows DNS server traffic.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">openstackclient</span><span class="o">.</span><span class="n">shell</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;security group show dns&#39;</span><span class="p">))</span>
+<span class="go">+-------------+-------------------------------------------------------------------------+</span>
+<span class="go">| Field       | Value                                                                   |</span>
+<span class="go">+-------------+-------------------------------------------------------------------------+</span>
+<span class="gp">...</span>
+<span class="go">| name        | dns                                                                     |</span>
+<span class="gp">...</span>
+<span class="go">+-------------+-------------------------------------------------------------------------+</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="provisioning">
 <h2>Provisioning<a class="headerlink" href="#provisioning" title="Permalink to this headline">¶</a></h2>
@@ -113,6 +140,8 @@ modules. Here&#8217;s our playbook:</p>
     <span class="l l-Scalar l-Scalar-Plain">node_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
     <span class="l l-Scalar l-Scalar-Plain">lb_count</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
     <span class="l l-Scalar l-Scalar-Plain">namespace</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
+    <span class="l l-Scalar l-Scalar-Plain">installer_security_groups</span><span class="p p-Indicator">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
     <span class="l l-Scalar l-Scalar-Plain">master_security_groups</span><span class="p p-Indicator">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">default</span>
     <span class="l l-Scalar l-Scalar-Plain">node_security_groups</span><span class="p p-Indicator">:</span>
@@ -124,6 +153,13 @@ modules. Here&#8217;s our playbook:</p>
   <span class="l l-Scalar l-Scalar-Plain">vars_files</span><span class="p p-Indicator">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vars/openstack.yaml</span>
   <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE installer root volume</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+        <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-installer-root-vol&quot;</span>
 
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE master root volumes</span>
       <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
@@ -156,12 +192,28 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">image</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">RHEL7</span>
         <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-dns-root-vol&quot;</span>
 
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create Docker storage volumes for OSE masters</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
+        <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ master_count }} format=master-%d-docker-vol</span>
+
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create Docker storage volumes for OSE nodes</span>
       <span class="l l-Scalar l-Scalar-Plain">os_volume</span><span class="p p-Indicator">:</span>
         <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
         <span class="l l-Scalar l-Scalar-Plain">size</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
         <span class="l l-Scalar l-Scalar-Plain">display_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}&quot;</span>
       <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ node_count }} format=ose-node-%d-docker-vol</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE installer instance</span>
+      <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-installer&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
+        <span class="l l-Scalar l-Scalar-Plain">flavor</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">m1.medium</span>
+        <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-ose-installer-root-vol&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">installer_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
 
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE master instances</span>
       <span class="l l-Scalar l-Scalar-Plain">os_server</span><span class="p p-Indicator">:</span>
@@ -171,6 +223,8 @@ modules. Here&#8217;s our playbook:</p>
         <span class="l l-Scalar l-Scalar-Plain">boot_volume</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-root-vol&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">key_name</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">openstack_key_name</span><span class="nv"> </span><span class="s">}}&quot;</span>
         <span class="l l-Scalar l-Scalar-Plain">security_groups</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">master_security_groups</span><span class="nv"> </span><span class="s">}}&quot;</span>
+        <span class="l l-Scalar l-Scalar-Plain">volumes</span><span class="p p-Indicator">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">namespace</span><span class="nv"> </span><span class="s">}}-{{</span><span class="nv"> </span><span class="s">item</span><span class="nv"> </span><span class="s">}}-docker-vol&quot;</span>
       <span class="l l-Scalar l-Scalar-Plain">with_sequence</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">start=1 end={{ master_count }} format=ose-master-%d</span>
 
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create OSE node instances</span>
@@ -221,6 +275,9 @@ modules. Here&#8217;s our playbook:</p>
  <span class="n">TASK</span> <span class="p">[</span><span class="n">setup</span><span class="p">]</span> <span class="o">*******************************************************************</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
 
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">installer</span> <span class="n">root</span> <span class="n">volume</span><span class="p">]</span> <span class="o">****************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
+
  <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">master</span> <span class="n">root</span> <span class="n">volumes</span><span class="p">]</span> <span class="o">******************************************</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">root</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
@@ -239,11 +296,19 @@ modules. Here&#8217;s our playbook:</p>
  <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">DNS</span> <span class="n">root</span> <span class="n">volume</span><span class="p">]</span> <span class="o">**************************************************</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
 
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">Docker</span> <span class="n">storage</span> <span class="n">volumes</span> <span class="k">for</span> <span class="n">OSE</span> <span class="n">masters</span><span class="p">]</span> <span class="o">***************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">master</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">master</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
  <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">Docker</span> <span class="n">storage</span> <span class="n">volumes</span> <span class="k">for</span> <span class="n">OSE</span> <span class="n">nodes</span><span class="p">]</span> <span class="o">*****************************</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">3</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">docker</span><span class="o">-</span><span class="n">vol</span><span class="p">)</span>
+
+ <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">installer</span> <span class="n">instance</span><span class="p">]</span> <span class="o">*******************************************</span>
+ <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span>
 
  <span class="n">TASK</span> <span class="p">[</span><span class="n">create</span> <span class="n">OSE</span> <span class="n">master</span> <span class="n">instances</span><span class="p">]</span> <span class="o">*********************************************</span>
  <span class="o">...</span><span class="p">:</span> <span class="p">[</span><span class="n">localhost</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -285,6 +350,7 @@ modules. Here&#8217;s our playbook:</p>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li><a class="reference internal" href="#images">Images</a></li>
 <li><a class="reference internal" href="#flavors">Flavors</a></li>
+<li><a class="reference internal" href="#security-groups">Security Groups</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#provisioning">Provisioning</a></li>

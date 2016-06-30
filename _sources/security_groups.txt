@@ -1,0 +1,60 @@
+Security Groups
+===============
+
+The environment needs to allow access to the following ports in their security
+group configuration.
+
+
+Security Group: default
+-----------------------
+
++------+-------+-----------+
+| Port | Proto | Allowed   |
++======+=======+===========+
+| 22   | tcp   | 0.0.0.0/0 |
++------+-------+-----------+
+
+
+
+| Security Group | Port | Proto | Rule                        | Hosts |
+| default        | 22   | tcp   | ingress/egress from 0.0.0.0 | All   |
+| web            | 
+
+All OpenShift Hosts - tcp/22 from host running the installer/Ansible
+
+etcd Security Group
+	
+
+    tcp/2379 from masters
+
+    tcp/2380 from etcd hosts
+
+Master Security Group
+	
+
+    tcp/8443 from 0.0.0.0/0
+
+    tcp/53 from all OpenShift hosts for environments installed prior to or upgraded to 3.2
+
+    udp/53 from all OpenShift hosts for environments installed prior to or upgraded to 3.2
+
+    tcp/8053 from all OpenShift hosts for new environments installed with 3.2
+
+    udp/8053 from all OpenShift hosts for new environments installed with 3.2
+
+Node Security Group
+	
+
+    tcp/10250 from masters
+
+    tcp/4789 from nodes
+
+Infrastructure Nodes (ones that can host the OpenShift router)
+	
+
+    tcp/443 from 0.0.0.0/0
+
+    tcp/80 from 0.0.0.0/0
+
+
+https://docs.openshift.com/enterprise/3.2/install_config/install/prerequisites.html#prereq-cloud-provider-considerations
