@@ -32,9 +32,9 @@ openshift_master_cluster_public_hostname=cluster.osedemo.example.com
 
 # host group for masters
 [masters]
-demo-ose-master-1.osedemo.internal openshift_hostname=demo-ose-master-1.osedemo.internal openshift_public_hostname=demo-ose-master-1.osedemo.example.com
-demo-ose-master-2.osedemo.internal openshift_hostname=demo-ose-master-2.osedemo.internal openshift_public_hostname=demo-ose-master-2.osedemo.example.com
-demo-ose-master-3.osedemo.internal openshift_hostname=demo-ose-master-3.osedemo.internal openshift_public_hostname=demo-ose-master-3.osedemo.example.com
+demo-ose-master-1.osedemo.internal openshift_hostname=demo-ose-master-1.osedemo.internal openshift_public_hostname=demo-ose-master-1.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-master-1']['ansible_host'] }}
+demo-ose-master-2.osedemo.internal openshift_hostname=demo-ose-master-2.osedemo.internal openshift_public_hostname=demo-ose-master-2.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-master-2']['ansible_host'] }}
+demo-ose-master-3.osedemo.internal openshift_hostname=demo-ose-master-3.osedemo.internal openshift_public_hostname=demo-ose-master-3.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-master-3']['ansible_host'] }}
 
 # host group for etcd
 [etcd:children]
@@ -47,7 +47,7 @@ demo-ose-lb-1.osedemo.internal openshift_hostname=demo-ose-lb-1.osedemo.internal
 # host group for nodes, includes region info
 [nodes]
 demo-ose-master-[1:3].osedemo.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_schedulable=false
-demo-ose-node-1.osedemo.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_hostname=demo-ose-node-1.osedemo.internal openshift_public_hostname=demo-ose-node-1.osedemo.example.com
-demo-ose-node-2.osedemo.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_hostname=demo-ose-node-2.osedemo.internal openshift_public_hostname=demo-ose-node-2.osedemo.example.com
-demo-ose-node-3.osedemo.internal openshift_node_labels="{'region': 'primary', 'zone': 'blue'}" openshift_hostname=demo-ose-node-3.osedemo.internal openshift_public_hostname=demo-ose-node-3.osedemo.example.com
-demo-ose-node-4.osedemo.internal openshift_node_labels="{'region': 'primary', 'zone': 'blue'}" openshift_hostname=demo-ose-node-4.osedemo.internal openshift_public_hostname=demo-ose-node-4.osedemo.example.com
+demo-ose-node-1.osedemo.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_hostname=demo-ose-node-1.osedemo.internal openshift_public_hostname=demo-ose-node-1.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-node-1']['ansible_host'] }}
+demo-ose-node-2.osedemo.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}" openshift_hostname=demo-ose-node-2.osedemo.internal openshift_public_hostname=demo-ose-node-2.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-node-2']['ansible_host'] }}
+demo-ose-node-3.osedemo.internal openshift_node_labels="{'region': 'primary', 'zone': 'blue'}" openshift_hostname=demo-ose-node-3.osedemo.internal openshift_public_hostname=demo-ose-node-3.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-node-3']['ansible_host'] }}
+demo-ose-node-4.osedemo.internal openshift_node_labels="{'region': 'primary', 'zone': 'blue'}" openshift_hostname=demo-ose-node-4.osedemo.internal openshift_public_hostname=demo-ose-node-4.osedemo.example.com openshift_public_ip={{ hostvars['demo-ose-node-4']['ansible_host'] }}
