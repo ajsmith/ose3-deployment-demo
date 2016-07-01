@@ -19,3 +19,5 @@ Contents:
    rhn
    host-setup
    installation
+   security-groups
+   web-console
