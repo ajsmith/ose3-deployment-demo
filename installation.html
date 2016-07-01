@@ -69,6 +69,40 @@ installer host, using the following Ansible playbook.</p>
         <span class="no">--service-account=registry</span>
         <span class="no">--images=&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
       <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router certs</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm ca create-server-cert</span>
+        <span class="no">--signer-cert=/etc/origin/master/ca.crt</span>
+        <span class="no">--signer-key=/etc/origin/master/ca.key</span>
+        <span class="no">--signer-serial=/etc/origin/master/ca.serial.txt</span>
+        <span class="no">--hostnames=&#39;*.apps.osedemo.example.com&#39;</span>
+        <span class="no">--cert=/etc/origin/master/apps.crt</span>
+        <span class="no">--key=/etc/origin/master/apps.key</span>
+      <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/origin/master/apps.key</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router PEM file</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">cat /etc/origin/master/apps.crt /etc/origin/master/apps.key</span>
+        <span class="no">/etc/origin/master/ca.crt &gt; /etc/origin/master/apps.pem</span>
+      <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/origin/master/apps.pem</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm router router --replicas=2</span>
+        <span class="no">--credentials=&#39;/etc/origin/master/openshift-router.kubeconfig&#39;</span>
+        <span class="no">--service-account=router</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>
