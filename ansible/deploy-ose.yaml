@@ -17,6 +17,6 @@
         - registry
       command: >
         oadm registry --config=/etc/origin/master/admin.kubeconfig
-        --credentials=/etc/origin/master/openshift-registry.kubeconfig
+        --service-account=registry
         --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
-
+      become: true
