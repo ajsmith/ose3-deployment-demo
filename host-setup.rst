@@ -20,3 +20,16 @@ All of the work in this playbook is done by the roles declared by each
 play. Tags are also applied to allow for re-running plays for specific hosts
 without needing to execute the entire playbook. All of the roles used are
 defined in `ansible/roles/`.
+
+Now let's run it.
+
+.. doctest::
+
+    >>> import ansible.cli.playbook
+    >>> def run_playbook(cmd):
+    ...     """Helper function to run playbooks using the Playbook CLI."""
+    ...     argv = shlex.split(cmd)
+    ...     cli = ansible.cli.playbook.PlaybookCLI(['ansible-playbook'] + argv)
+    ...     cli.parse()
+    ...     return cli.run()
+    >>> run_playbook('ansible/setup-hosts.yaml')
