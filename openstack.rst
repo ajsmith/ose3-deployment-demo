@@ -3,15 +3,14 @@ Deployment on OpenStack
 =======================
 
 Here, we will provision the servers and other resources needed for the OSE3
-installation, specified in the :doc:`architecture overview <architecture>`.
-
-This deployment is targeted for use with the OS1 Public cloud. Other OpenStack
-clouds may be used but are untested. Modifications may be needed for these
-examples to work in other OpenStack environments.
+installation. This deployment is targeted for use with the OS1 Public
+cloud. Other OpenStack clouds may be used but are untested. Modifications may
+be needed for these examples to work in other OpenStack environments.
 
 These examples assume you're starting from scratch and have no existing
 instances. If you have existing instances, you'll have to adjust these examples
 for your specific environment.
+
 
 Architecture
 ============
