@@ -39,16 +39,16 @@ Now let's run it.
     PLAY [gather facts about hosts] ************************************************
     <BLANKLINE>
     TASK [setup] *******************************************************************
+    ...: [demo-ose-installer]
     ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
-    ...: [demo-ose-node-1]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-installer]
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
     ...: [demo-ose-node-4]
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     ...: [demo-ose-dns]
     <BLANKLINE>
     PLAY [setup DNS server] ********************************************************
@@ -101,160 +101,160 @@ Now let's run it.
     PLAY [setup OSE nodes] *********************************************************
     <BLANKLINE>
     TASK [setup] *******************************************************************
-    ...: [demo-ose-node-2]
-    ...: [demo-ose-node-4]
     ...: [demo-ose-node-1]
+    ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [net-common : configure eth0] *********************************************
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
     ...: [demo-ose-node-4]
-    ...: [demo-ose-node-1]
     <BLANKLINE>
     TASK [net-common : configure hostname] *****************************************
-    ...: [demo-ose-node-3]
-    ...: [demo-ose-node-4]
     ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
+    ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [net-common : configure dhclient] *****************************************
-    ...: [demo-ose-node-4]
     ...: [demo-ose-node-1]
-    ...: [demo-ose-node-3]
     ...: [demo-ose-node-2]
+    ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [rhn : register system to RHN] ********************************************
-    ...: [demo-ose-node-4]
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
-    ...: [demo-ose-node-1]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [rhn : attach subscription] ***********************************************
-    ...: [demo-ose-node-4]
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
-    ...: [demo-ose-node-1]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [rhn : disable all repos] *************************************************
-    ...: [demo-ose-node-4]
-    ...: [demo-ose-node-2]
     ...: [demo-ose-node-1]
+    ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [rhn : enable RHEL repo] **************************************************
-    ...: [demo-ose-node-4]
     ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [rhn : update RHEL] *******************************************************
-    ...: [demo-ose-node-2]
-    ...: [demo-ose-node-4]
-    ...: [demo-ose-node-3]
     ...: [demo-ose-node-1]
+    ...: [demo-ose-node-2]
+    ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [ose-common : enable OSE3.2 repos] ****************************************
-    ...: [demo-ose-node-3]
-    ...: [demo-ose-node-4]
     ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
+    ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [ose-common : install base packages] **************************************
-    ...: [demo-ose-node-2]
-    ...: [demo-ose-node-4]
-    ...: [demo-ose-node-3]
     ...: [demo-ose-node-1]
+    ...: [demo-ose-node-2]
+    ...: [demo-ose-node-3]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [docker : install docker] *************************************************
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
     ...: [demo-ose-node-4]
-    ...: [demo-ose-node-1]
     <BLANKLINE>
     TASK [docker : configure docker storage backend] *******************************
-    ...: [demo-ose-node-4]
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
-    ...: [demo-ose-node-1]
+    ...: [demo-ose-node-4]
     <BLANKLINE>
     TASK [docker : configure docker] ***********************************************
+    ...: [demo-ose-node-1]
+    ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
     ...: [demo-ose-node-4]
-    ...: [demo-ose-node-2]
-    ...: [demo-ose-node-1]
     <BLANKLINE>
     TASK [docker : enable docker] **************************************************
-    ...: [demo-ose-node-4]
+    ...: [demo-ose-node-1]
     ...: [demo-ose-node-2]
     ...: [demo-ose-node-3]
-    ...: [demo-ose-node-1]
+    ...: [demo-ose-node-4]
     <BLANKLINE>...
     PLAY [setup OSE masters] *******************************************************
     <BLANKLINE>
     TASK [setup] *******************************************************************
     ...: [demo-ose-master-1]
-    ...: [demo-ose-master-3]
     ...: [demo-ose-master-2]
+    ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [net-common : configure eth0] *********************************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [net-common : configure hostname] *****************************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [net-common : configure dhclient] *****************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [rhn : register system to RHN] ********************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [rhn : attach subscription] ***********************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [rhn : disable all repos] *************************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [rhn : enable RHEL repo] **************************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [rhn : update RHEL] *******************************************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [ose-common : enable OSE3.2 repos] ****************************************
-    ...: [demo-ose-master-3]
     ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
+    ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [ose-common : install base packages] **************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [docker : install docker] *************************************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [docker : configure docker storage backend] *******************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [docker : configure docker] ***********************************************
@@ -263,13 +263,13 @@ Now let's run it.
     ...: [demo-ose-master-3]
     <BLANKLINE>
     TASK [docker : enable docker] **************************************************
+    ...: [demo-ose-master-1]
     ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
-    ...: [demo-ose-master-1]
     <BLANKLINE>
     TASK [ose-master : add htpasswd file] ******************************************
-    ...: [demo-ose-master-2]
     ...: [demo-ose-master-1]
+    ...: [demo-ose-master-2]
     ...: [demo-ose-master-3]
     <BLANKLINE>...
     PLAY [setup load balancers] ****************************************************
@@ -279,36 +279,36 @@ Now let's run it.
     ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [net-common : configure eth0] *********************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [net-common : configure hostname] *****************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [net-common : configure dhclient] *****************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [rhn : register system to RHN] ********************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [rhn : attach subscription] ***********************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [rhn : disable all repos] *************************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [rhn : enable RHEL repo] **************************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>
     TASK [rhn : update RHEL] *******************************************************
-    ...: [demo-ose-lb-2]
     ...: [demo-ose-lb-1]
+    ...: [demo-ose-lb-2]
     <BLANKLINE>...
     PLAY [setup OSE installer] *****************************************************
     <BLANKLINE>

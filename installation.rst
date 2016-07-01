@@ -10,15 +10,6 @@ installer host, using the following Ansible playbook.
    :caption:
    :language: yaml
 
-Now let's run it.
+Now let's run it. (Note the output is not checked. We're simply running the
+thing for now.)
 
-.. doctest::
-
-    >>> import ansible.cli.playbook
-    >>> def run_playbook(cmd):
-    ...     """Helper function to run playbooks using the Playbook CLI."""
-    ...     argv = shlex.split(cmd)
-    ...     cli = ansible.cli.playbook.PlaybookCLI(['ansible-playbook'] + argv)
-    ...     cli.parse()
-    ...     return cli.run()
-    >>> run_playbook('ansible/deploy-ose.yaml')
