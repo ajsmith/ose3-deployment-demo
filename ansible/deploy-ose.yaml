@@ -20,3 +20,37 @@
         --service-account=registry
         --images='registry.access.redhat.com/openshift3/ose-${component}:${version}'
       become: true
+
+    - name: create router certs
+      tags:
+        - router
+      command: >
+        oadm ca create-server-cert
+        --signer-cert=/etc/origin/master/ca.crt
+        --signer-key=/etc/origin/master/ca.key
+        --signer-serial=/etc/origin/master/ca.serial.txt
+        --hostnames='*.apps.osedemo.example.com'
+        --cert=/etc/origin/master/apps.crt
+        --key=/etc/origin/master/apps.key
+      args:
+        creates: /etc/origin/master/apps.key
+      become: true
+
+    - name: create router PEM file
+      tags:
+        - router
+      shell: >
+        cat /etc/origin/master/apps.crt /etc/origin/master/apps.key
+        /etc/origin/master/ca.crt > /etc/origin/master/apps.pem
+      args:
+        creates: /etc/origin/master/apps.pem
+      become: true
+
+    - name: create router
+      tags:
+        - router
+      command: >
+        oadm router router --replicas=2
+        --credentials='/etc/origin/master/openshift-router.kubeconfig'
+        --service-account=router
+      become: true
