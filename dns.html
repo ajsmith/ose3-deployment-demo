@@ -43,6 +43,7 @@
 <div class="literal-block-wrapper container" id="ansible-roles-dns-server-meta-main-yaml">
 <div class="code-block-caption"><span class="caption-text">ansible/roles/dns-server/meta/main.yaml</span><a class="headerlink" href="#ansible-roles-dns-server-meta-main-yaml" title="Permalink to this code">¶</a></div>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">dependencies</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">role</span><span class="p p-Indicator">:</span> <span class="nv">net-common</span> <span class="p p-Indicator">}</span>
   <span class="p p-Indicator">-</span> <span class="p p-Indicator">{</span> <span class="nv">role</span><span class="p p-Indicator">:</span> <span class="nv">rhn</span> <span class="p p-Indicator">}</span>
 </pre></div>
 </div>
@@ -143,7 +144,8 @@
 <span class="x">     attacks. Implementing BCP38 within your network would greatly</span>
 <span class="x">     reduce such attack surface</span>
 <span class="x">  */</span>
-<span class="x">  recursion no;</span>
+<span class="x">  recursion yes;</span>
+<span class="x">  allow-recursion { localhost; localnets; };</span>
 
 <span class="x">  dnssec-enable yes;</span>
 <span class="x">  dnssec-validation yes;</span>
@@ -247,6 +249,8 @@
 <span class="cp">{{</span> <span class="nv">host</span> <span class="cp">}}</span><span class="x"> IN A </span><span class="cp">{{</span> <span class="nv">hostvars</span><span class="o">[</span><span class="nv">host</span><span class="o">][</span><span class="s1">&#39;ansible_host&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"></span>
 <span class="cp">{%</span> <span class="k">endfor</span> <span class="cp">%}</span><span class="x"></span>
 <span class="x">cluster IN A </span><span class="cp">{{</span> <span class="nv">hostvars</span><span class="o">[</span><span class="s1">&#39;demo-ose-lb-1&#39;</span><span class="o">][</span><span class="s1">&#39;ansible_host&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"></span>
+<span class="x">*.apps 60 IN A </span><span class="cp">{{</span> <span class="nv">hostvars</span><span class="o">[</span><span class="s1">&#39;demo-ose-node-1&#39;</span><span class="o">][</span><span class="s1">&#39;ansible_host&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"></span>
+<span class="x">          IN A </span><span class="cp">{{</span> <span class="nv">hostvars</span><span class="o">[</span><span class="s1">&#39;demo-ose-node-2&#39;</span><span class="o">][</span><span class="s1">&#39;ansible_host&#39;</span><span class="o">]</span> <span class="cp">}}</span><span class="x"></span>
 </pre></div>
 </div>
 </div>

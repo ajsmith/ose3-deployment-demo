@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
-    <link rel="next" title="DNS Configuration" href="dns.html" />
+    <link rel="next" title="Host Setup" href="host-setup.html" />
     <link rel="prev" title="Inventory" href="inventory.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -50,17 +50,7 @@ is implemented as an Ansible Role, which all hosts utilize.</p>
 base RHEL repositories, and update the system.</p>
 <div class="literal-block-wrapper container" id="ansible-roles-rhn-tasks-main-yaml">
 <div class="code-block-caption"><span class="caption-text">ansible/roles/rhn/tasks/main.yaml</span><a class="headerlink" href="#ansible-roles-rhn-tasks-main-yaml" title="Permalink to this code">¶</a></div>
-<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># This ensures that DNS works, since images may be configured to use an</span>
-<span class="c1"># internal DNS service.</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">use public DNS</span>
-  <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">dest</span><span class="p p-Indicator">:</span> <span class="s">&quot;/etc/resolv.conf&quot;</span>
-    <span class="l l-Scalar l-Scalar-Plain">content</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">|</span>
-      <span class="no">search default</span>
-      <span class="no">nameserver 8.8.8.8</span>
-      <span class="no">nameserver 8.8.4.4</span>
-
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">register system to RHN</span>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">register system to RHN</span>
   <span class="l l-Scalar l-Scalar-Plain">redhat_subscription</span><span class="p p-Indicator">:</span>
     <span class="l l-Scalar l-Scalar-Plain">state</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">present</span>
     <span class="l l-Scalar l-Scalar-Plain">username</span><span class="p p-Indicator">:</span> <span class="s">&quot;{{</span><span class="nv"> </span><span class="s">rhn_username</span><span class="nv"> </span><span class="s">}}&quot;</span>
@@ -135,7 +125,7 @@ a handler for that as well.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="inventory.html" title="previous chapter">Inventory</a></li>
-      <li>Next: <a href="dns.html" title="next chapter">DNS Configuration</a></li>
+      <li>Next: <a href="host-setup.html" title="next chapter">Host Setup</a></li>
   </ul></li>
 </ul>
 </div>

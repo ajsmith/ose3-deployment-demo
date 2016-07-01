@@ -24,6 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
+    <link rel="next" title="Security Groups" href="security-groups.html" />
     <link rel="prev" title="Host Setup" href="host-setup.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -48,11 +49,26 @@ installer host, using the following Ansible playbook.</p>
 <div class="code-block-caption"><span class="caption-text">ansible/deploy-ose.yaml</span><a class="headerlink" href="#ansible-deploy-ose-yaml" title="Permalink to this code">¶</a></div>
 <div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy OSE</span>
   <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">installer</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">install</span>
   <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
 
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">run deployment playbook</span>
       <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml</span>
       <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure OSE components</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-ose-master-1</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy internal registry</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">registry</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm registry --config=/etc/origin/master/admin.kubeconfig</span>
+        <span class="no">--service-account=registry</span>
+        <span class="no">--images=&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>
@@ -68,6 +84,7 @@ installer host, using the following Ansible playbook.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="host-setup.html" title="previous chapter">Host Setup</a></li>
+      <li>Next: <a href="security-groups.html" title="next chapter">Security Groups</a></li>
   </ul></li>
 </ul>
 </div>
