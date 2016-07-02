@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="OSE3 Advanced Enablement Homework 1.0 documentation" href="index.html" />
-    <link rel="next" title="Inventory" href="inventory.html" />
-    <link rel="prev" title="Architecture Overview" href="architecture.html" />
+    <link rel="next" title="Security Groups" href="security-groups.html" />
+    <link rel="prev" title="README" href="README.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -43,15 +43,75 @@
   <div class="section" id="deployment-on-openstack">
 <h1>Deployment on OpenStack<a class="headerlink" href="#deployment-on-openstack" title="Permalink to this headline">¶</a></h1>
 <p>Here, we will provision the servers and other resources needed for the OSE3
-installation, specified in the <a class="reference internal" href="architecture.html"><span class="doc">architecture overview</span></a>.</p>
-<p>This deployment is targeted for use with the OS1 Public cloud. Other OpenStack
-clouds may be used but are untested. Modifications may be needed for these
-examples to work in other OpenStack environments.</p>
+installation. This deployment is targeted for use with the OS1 Public
+cloud. Other OpenStack clouds may be used but are untested. Modifications may
+be needed for these examples to work in other OpenStack environments.</p>
 <p>These examples assume you&#8217;re starting from scratch and have no existing
 instances. If you have existing instances, you&#8217;ll have to adjust these examples
 for your specific environment.</p>
-<div class="section" id="environment">
-<h2>Environment<a class="headerlink" href="#environment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>The HA deployment of OSE 3.2 will consist of the following hosts:</p>
+<ul class="simple">
+<li>1 x Installer</li>
+<li>3 x Masters</li>
+<li>4 x Nodes (2 Infra, 2 App)</li>
+<li>2 x Load Balancers</li>
+<li>1 x DNS</li>
+</ul>
+<p>Below are the hardware specs for each host type:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="21%" />
+<col width="11%" />
+<col width="19%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Node Type</th>
+<th class="head">CPUs</th>
+<th class="head">RAM (GB)</th>
+<th class="head">Disk 1 (GB)</th>
+<th class="head">Disk 2 (GB)</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Installer</td>
+<td>2</td>
+<td>4</td>
+<td>20</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>Master</td>
+<td>2</td>
+<td>4</td>
+<td>40</td>
+<td>15</td>
+</tr>
+<tr class="row-even"><td>Compute</td>
+<td>2</td>
+<td>4</td>
+<td>25</td>
+<td>15</td>
+</tr>
+<tr class="row-odd"><td>LB</td>
+<td>2</td>
+<td>4</td>
+<td>20</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>DNS</td>
+<td>2</td>
+<td>4</td>
+<td>20</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="openstack-environment">
+<h2>OpenStack Environment<a class="headerlink" href="#openstack-environment" title="Permalink to this headline">¶</a></h2>
 <p>The following examples require that your environment be configured with your
 OpenStack login credentials. This is typically accomplished by running:</p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span>$ <span class="nb">source</span> openrc.sh
@@ -335,6 +395,273 @@ modules. Here&#8217;s our playbook:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="inventory">
+<h2>Inventory<a class="headerlink" href="#inventory" title="Permalink to this headline">¶</a></h2>
+<p>Now that we&#8217;ve provisioned our servers, let&#8217;s write an inventory file for them.</p>
+<p>First, let&#8217;s create an OpenStack client instance.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shade.inventory</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inventory</span> <span class="o">=</span> <span class="n">shade</span><span class="o">.</span><span class="n">inventory</span><span class="o">.</span><span class="n">OpenStackInventory</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Then build a list of our instance names to filter by.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server_names</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="gp">... </span><span class="s2">demo-ose-installer</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-1</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-2</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-3</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-1</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-2</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-3</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-4</span>
+<span class="gp">... </span><span class="s2">demo-ose-lb-1</span>
+<span class="gp">... </span><span class="s2">demo-ose-lb-2</span>
+<span class="gp">... </span><span class="s2">demo-ose-dns</span>
+<span class="gp">... </span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">server_names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">server_names</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Get a list of hosts, selecting only the ones above.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">hosts</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">e</span><span class="p">:</span> <span class="n">e</span><span class="p">[</span><span class="s1">u&#39;human_id&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">server_names</span><span class="p">,</span> <span class="n">inventory</span><span class="o">.</span><span class="n">list_hosts</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>Build a map of server name to IPs.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">address_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">e</span><span class="p">[</span><span class="s1">u&#39;human_id&#39;</span><span class="p">],</span> <span class="n">e</span><span class="p">[</span><span class="s1">u&#39;accessIPv4&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">hosts</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then write out the inventory file.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inventory_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;hosts.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inventory_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="gp">... </span><span class="s2">[hosts:children]</span>
+<span class="gp">... </span><span class="s2">installer</span>
+<span class="gp">... </span><span class="s2">masters</span>
+<span class="gp">... </span><span class="s2">nodes</span>
+<span class="gp">... </span><span class="s2">lbs</span>
+<span class="gp">... </span><span class="s2">dns</span>
+<span class="gp">... </span><span class="s2">[hosts:vars]</span>
+<span class="gp">... </span><span class="s2">ansible_user=cloud-user</span>
+<span class="gp">... </span><span class="s2">[OSEv3:children]</span>
+<span class="gp">... </span><span class="s2">masters</span>
+<span class="gp">... </span><span class="s2">nodes</span>
+<span class="gp">... </span><span class="s2">[installer]</span>
+<span class="gp">... </span><span class="s2">demo-ose-installer ansible_host={demo-ose-installer}</span>
+<span class="gp">... </span><span class="s2">[masters]</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-1 ansible_host={demo-ose-master-1}</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-2 ansible_host={demo-ose-master-2}</span>
+<span class="gp">... </span><span class="s2">demo-ose-master-3 ansible_host={demo-ose-master-3}</span>
+<span class="gp">... </span><span class="s2">[nodes]</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-1 ansible_host={demo-ose-node-1}</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-2 ansible_host={demo-ose-node-2}</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-3 ansible_host={demo-ose-node-3}</span>
+<span class="gp">... </span><span class="s2">demo-ose-node-4 ansible_host={demo-ose-node-4}</span>
+<span class="gp">... </span><span class="s2">[lbs]</span>
+<span class="gp">... </span><span class="s2">demo-ose-lb-1 ansible_host={demo-ose-lb-1}</span>
+<span class="gp">... </span><span class="s2">demo-ose-lb-2 ansible_host={demo-ose-lb-2}</span>
+<span class="gp">... </span><span class="s2">[dns]</span>
+<span class="gp">... </span><span class="s2">demo-ose-dns ansible_host={demo-ose-dns}</span>
+<span class="gp">... </span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">address_map</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inventory_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Finally, let&#8217;s check that it works by calling Ansible to check our hosts.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ansible.cli.adhoc</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shlex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">run_ansible</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="sd">&quot;&quot;&quot;Helper function to run Ansible using the Ansible CLI.&quot;&quot;&quot;</span>
+<span class="gp">... </span>    <span class="n">argv</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">cli</span> <span class="o">=</span> <span class="n">ansible</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">adhoc</span><span class="o">.</span><span class="n">AdHocCLI</span><span class="p">([</span><span class="s1">&#39;ansible&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">cli</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>To check, let&#8217;s simply tell all of our hosts to report their hostname.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">run_ansible</span><span class="p">(</span><span class="s1">&#39;-i hosts.cfg -f 1 -o -m command -a &quot;hostname -s&quot; all&#39;</span><span class="p">)</span>
+<span class="go">demo-ose-installer | SUCCESS | rc=0 | (stdout) demo-ose-installer</span>
+<span class="go">demo-ose-master-1 | SUCCESS | rc=0 | (stdout) demo-ose-master-1</span>
+<span class="go">demo-ose-master-2 | SUCCESS | rc=0 | (stdout) demo-ose-master-2</span>
+<span class="go">demo-ose-master-3 | SUCCESS | rc=0 | (stdout) demo-ose-master-3</span>
+<span class="go">demo-ose-node-1 | SUCCESS | rc=0 | (stdout) demo-ose-node-1</span>
+<span class="go">demo-ose-node-2 | SUCCESS | rc=0 | (stdout) demo-ose-node-2</span>
+<span class="go">demo-ose-node-3 | SUCCESS | rc=0 | (stdout) demo-ose-node-3</span>
+<span class="go">demo-ose-node-4 | SUCCESS | rc=0 | (stdout) demo-ose-node-4</span>
+<span class="go">demo-ose-lb-1 | SUCCESS | rc=0 | (stdout) demo-ose-lb-1</span>
+<span class="go">demo-ose-lb-2 | SUCCESS | rc=0 | (stdout) demo-ose-lb-2</span>
+<span class="go">demo-ose-dns | SUCCESS | rc=0 | (stdout) demo-ose-dns</span>
+<span class="go">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="host-setup">
+<h2>Host Setup<a class="headerlink" href="#host-setup" title="Permalink to this headline">¶</a></h2>
+<p>OSE hosts must be configured to meet the prerequisites given in the OSE
+installation documentation. This basically amounts to installing the required
+packages and configuring Docker.</p>
+<p>Here, we&#8217;ll also configure the additional instances needed to support our
+environment, which includes the DNS server, load balancers, and the OSE
+installer.</p>
+<p>Below is the Ansible playbook used to perform these setup tasks.</p>
+<div class="literal-block-wrapper container" id="ansible-setup-hosts-yaml">
+<div class="code-block-caption"><span class="caption-text">ansible/setup-hosts.yaml</span><a class="headerlink" href="#ansible-setup-hosts-yaml" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">gather facts about hosts</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">all</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[]</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">facts</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setup DNS server</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dns</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dns-server</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">net-common</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">dns</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setup OSE nodes</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">nodes</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ose-node</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">node</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setup OSE masters</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">masters</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ose-master</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setup load balancers</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lbs</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lb</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">lb</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setup OSE installer</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">installer</span>
+  <span class="l l-Scalar l-Scalar-Plain">roles</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ose-installer</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">installer</span>
+</pre></div>
+</div>
+</div>
+<p>All of the work in this playbook is done by the roles declared by each
+play. Tags are also applied to allow for re-running plays for specific hosts
+without needing to execute the entire playbook. All of the roles used are
+defined in <cite>ansible/roles/</cite>.</p>
+<p>Now let&#8217;s run it.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">ansible.cli.playbook</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">shlex</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="k">def</span> <span class="nf">run_playbook</span><span class="p">(</span><span class="n">cmd</span><span class="p">):</span>
+ <span class="o">...</span>     <span class="s2">&quot;&quot;&quot;Helper function to run playbooks using the Playbook CLI.&quot;&quot;&quot;</span>
+ <span class="o">...</span>     <span class="n">argv</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+ <span class="o">...</span>     <span class="n">cli</span> <span class="o">=</span> <span class="n">ansible</span><span class="o">.</span><span class="n">cli</span><span class="o">.</span><span class="n">playbook</span><span class="o">.</span><span class="n">PlaybookCLI</span><span class="p">([</span><span class="s1">&#39;ansible-playbook&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">argv</span><span class="p">)</span>
+ <span class="o">...</span>     <span class="n">cli</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+ <span class="o">...</span>     <span class="k">return</span> <span class="n">cli</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+ <span class="o">&gt;&gt;&gt;</span> <span class="n">run_playbook</span><span class="p">(</span><span class="s1">&#39;-i hosts.cfg -b -T 20 ansible/setup-hosts.yaml&#39;</span><span class="p">)</span>
+
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">gather</span> <span class="n">facts</span> <span class="n">about</span> <span class="n">hosts</span><span class="p">]</span> <span class="o">************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">setup</span> <span class="n">DNS</span> <span class="n">server</span><span class="p">]</span> <span class="o">********************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">setup</span> <span class="n">OSE</span> <span class="n">nodes</span><span class="p">]</span> <span class="o">*********************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">setup</span> <span class="n">OSE</span> <span class="n">masters</span><span class="p">]</span> <span class="o">*******************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">setup</span> <span class="n">load</span> <span class="n">balancers</span><span class="p">]</span> <span class="o">****************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="p">[</span><span class="n">setup</span> <span class="n">OSE</span> <span class="n">installer</span><span class="p">]</span> <span class="o">*****************************************************</span>
+ <span class="o">...</span>
+ <span class="n">PLAY</span> <span class="n">RECAP</span> <span class="o">*********************************************************************</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">dns</span>               <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">installer</span>         <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">1</span>              <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">lb</span><span class="o">-</span><span class="mi">2</span>              <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">1</span>          <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">2</span>          <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">master</span><span class="o">-</span><span class="mi">3</span>          <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">1</span>            <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">2</span>            <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">3</span>            <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+ <span class="n">demo</span><span class="o">-</span><span class="n">ose</span><span class="o">-</span><span class="n">node</span><span class="o">-</span><span class="mi">4</span>            <span class="p">:</span> <span class="n">ok</span><span class="o">=...</span>   <span class="n">changed</span><span class="o">=...</span>    <span class="n">unreachable</span><span class="o">=</span><span class="mi">0</span>    <span class="n">failed</span><span class="o">=</span><span class="mi">0</span>
+
+ <span class="mi">0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ose-installation">
+<h2>OSE Installation<a class="headerlink" href="#ose-installation" title="Permalink to this headline">¶</a></h2>
+<p>Once all hosts are configured, we&#8217;re able install OSE using the advanced
+installation method. The installer is actually run remotely on the OSE
+installer host, using the following Ansible playbook.</p>
+<div class="literal-block-wrapper container" id="ansible-deploy-ose-yaml">
+<div class="code-block-caption"><span class="caption-text">ansible/deploy-ose.yaml</span><a class="headerlink" href="#ansible-deploy-ose-yaml" title="Permalink to this code">¶</a></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy OSE</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">installer</span>
+  <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">install</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">run deployment playbook</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ansible-playbook /usr/share/ansible/openshift-ansible/playbooks/byo/config.yml</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure OSE components</span>
+  <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">demo-ose-master-1</span>
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">deploy internal registry</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">registry</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm registry --config=/etc/origin/master/admin.kubeconfig</span>
+        <span class="no">--service-account=registry</span>
+        <span class="no">--images=&#39;registry.access.redhat.com/openshift3/ose-${component}:${version}&#39;</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router certs</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm ca create-server-cert</span>
+        <span class="no">--signer-cert=/etc/origin/master/ca.crt</span>
+        <span class="no">--signer-key=/etc/origin/master/ca.key</span>
+        <span class="no">--signer-serial=/etc/origin/master/ca.serial.txt</span>
+        <span class="no">--hostnames=&#39;*.apps.osedemo.example.com&#39;</span>
+        <span class="no">--cert=/etc/origin/master/apps.crt</span>
+        <span class="no">--key=/etc/origin/master/apps.key</span>
+      <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/origin/master/apps.key</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router PEM file</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">shell</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">cat /etc/origin/master/apps.crt /etc/origin/master/apps.key</span>
+        <span class="no">/etc/origin/master/ca.crt &gt; /etc/origin/master/apps.pem</span>
+      <span class="l l-Scalar l-Scalar-Plain">args</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">creates</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/etc/origin/master/apps.pem</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">create router</span>
+      <span class="l l-Scalar l-Scalar-Plain">tags</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">router</span>
+      <span class="l l-Scalar l-Scalar-Plain">command</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">&gt;</span>
+        <span class="no">oadm router router --replicas=2</span>
+        <span class="no">--credentials=&#39;/etc/origin/master/openshift-router.kubeconfig&#39;</span>
+        <span class="no">--service-account=router</span>
+      <span class="l l-Scalar l-Scalar-Plain">become</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<p>To perform the installation, run:</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>$ ansible-playbook -i hosts.cfg ansible/deploy-ose.yaml
+</pre></div>
+</div>
+<p>Once complete, the OSE environment will be installed and running.</p>
+</div>
 </div>
 
 
@@ -346,7 +673,8 @@ modules. Here&#8217;s our playbook:</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Deployment on OpenStack</a><ul>
-<li><a class="reference internal" href="#environment">Environment</a></li>
+<li><a class="reference internal" href="#architecture">Architecture</a></li>
+<li><a class="reference internal" href="#openstack-environment">OpenStack Environment</a></li>
 <li><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
 <li><a class="reference internal" href="#images">Images</a></li>
 <li><a class="reference internal" href="#flavors">Flavors</a></li>
@@ -354,6 +682,9 @@ modules. Here&#8217;s our playbook:</p>
 </ul>
 </li>
 <li><a class="reference internal" href="#provisioning">Provisioning</a></li>
+<li><a class="reference internal" href="#inventory">Inventory</a></li>
+<li><a class="reference internal" href="#host-setup">Host Setup</a></li>
+<li><a class="reference internal" href="#ose-installation">OSE Installation</a></li>
 </ul>
 </li>
 </ul>
@@ -361,8 +692,8 @@ modules. Here&#8217;s our playbook:</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="architecture.html" title="previous chapter">Architecture Overview</a></li>
-      <li>Next: <a href="inventory.html" title="next chapter">Inventory</a></li>
+      <li>Previous: <a href="README.html" title="previous chapter">README</a></li>
+      <li>Next: <a href="security-groups.html" title="next chapter">Security Groups</a></li>
   </ul></li>
 </ul>
 </div>

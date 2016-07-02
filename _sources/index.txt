@@ -13,11 +13,6 @@ Contents:
    :maxdepth: 2
 
    README
-   architecture
    openstack
-   inventory
-   rhn
-   host-setup
-   installation
    security-groups
    web-console
