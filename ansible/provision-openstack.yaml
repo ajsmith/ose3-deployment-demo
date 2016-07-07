@@ -57,6 +57,13 @@
         image: RHEL7
         display_name: "{{ namespace }}-ose-dns-root-vol"
 
+    - name: create NFS volume
+      os_volume:
+        state: present
+        size: 50
+        image: RHEL7
+        display_name: "{{ namespace }}-ose-installer-nfs-vol"
+
     - name: create Docker storage volumes for OSE masters
       os_volume:
         state: present
@@ -79,6 +86,8 @@
         boot_volume: "{{ namespace }}-ose-installer-root-vol"
         key_name: "{{ openstack_key_name }}"
         security_groups: "{{ installer_security_groups }}"
+        volumes:
+          - "{{ namespace }}-ose-installer-nfs-vol"
 
     - name: create OSE master instances
       os_server:
