@@ -9,7 +9,6 @@
   hosts: dns
   roles:
     - dns-server
-    - net-common
   tags:
     - dns
 
